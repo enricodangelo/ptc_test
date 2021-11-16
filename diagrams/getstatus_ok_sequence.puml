@@ -1,0 +1,22 @@
+@startuml
+User -> FrontService: GET /api/v1/job/:id
+
+alt clientId and tenentId match
+  FrontService -> JobService: GET /api/v1/job/:id
+  JobService -> FrontService: status
+  alt status: EXECUTED
+    FrontService -> BlobService: HEAD /api/v1/blob/:id
+    BlobService -> FrontService: HTTP Response
+    alt HTTP 404
+      FrontService -> User: status: DELETED
+    else
+      FrontService -> User: status (EXECUTED)
+    end
+  else
+    FrontService -> User: status (EXECUTED)
+  end
+else
+  ' User is not owner of job
+  FrontService -> User: UnAuthorized
+end
+@enduml

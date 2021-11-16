@@ -9,31 +9,40 @@ The *FrontService* is the interface to the 2 worker services:
 
 ## FrontService
 
+### Architectural overveiw
+
+High level view of *FrontService*, *BlobService* and *JobService*.
+
+![context diagram](out/diagrams/context/context.png?raw=true)
+
+Internal view of components in *FrontService*.
+
+![container diagram](out/diagrams/FrontService/FrontService.png?raw=true)
+
 ### API
 
 - POST /api/v1/job: post a new job
 - GET /api/v1/job/:jobId: retrieve job's status
 - GET /api/v1/job/:jobId/output: retrieve job's output (job must be finished)
 
+### Job states
+
+Jobs in *FrontService* can change status as illustrated in the following diagram.
+
+![job statuses](out/diagrams/FrontService_JobStatus/FrontService_JobStatus.png?raw=true)
 
 
-take the incoming message
+### Use Cases
 
-validate and verify the message
+#### post a new job
 
-Create a new Job object
+![post a new job sequence diagram](out/diagrams/postjob_ok_sequence/postjob_ok_sequence.png?raw=true)
 
-Add following information to job
+#### get job's output
 
-tenentId
-clientId
-payload / payload location
-payload size
-Please write service in a language of your choice
+![get job's output sequence diagram](out/diagrams/getjob_ok_sequence/getjob_ok_sequence.png?raw=true)
 
-first
-![alt text](https://github.com/enricodangelo/ptc_test/blob/master/out/diagrams/context/context.png?raw=true
+#### get job status
 
-second
-![alt text](out/diagrams/FrontService/FrontService.png?raw=true)
+![get job status sequence diagram](out/diagrams/getstatus_ok_sequence/getstatus_ok_sequence.png?raw=true)
 

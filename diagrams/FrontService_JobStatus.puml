@@ -9,6 +9,7 @@ SUBMITTED_EXT_STATUS: traks all EXT_STATUSes on JobService
 EXECUTED: job reached final succesfull status on JobService
 EXECUTION_ERROR: job reached final error status on JobService
 DONE: job's output can no longer be retrieved
+DELETED: job's output is no longer stored on BlobSservice
 
 [*] --> CREATED
 CREATED --> STORED
@@ -24,4 +25,5 @@ SUBMITTED_EXT_STATUS --> EXECUTED
 SUBMITTED_EXT_STATUS --> EXECUTION_ERROR
 
 EXECUTED --> DONE
+EXECUTED --> DELETED
 @enduml
