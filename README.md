@@ -35,5 +35,5 @@ first
 ![alt text](https://github.com/enricodangelo/ptc_test/blob/master/out/diagrams/context/context.png?raw=true
 
 second
-![alt text](https://github.com/enricodangelo/ptc_test/blob/master/out/../../../../../../../out/diagrams/FrontService/FrontService.png?raw=true)
+![alt text](out/diagrams/FrontService/FrontService.png?raw=true)
 
