@@ -1,0 +1,19 @@
+@startuml
+User -> FrontService: GET /api/v1/job/:id/output
+
+alt clientId and tenentId match
+  FrontService -> JobService: GET /api/v1/job/:id
+  JobService -> FrontService: status
+  alt status: EXECUTED
+    FrontService -> BlobService: GET /api/v1/blob/:id
+    BlobService -> FrontService: blob
+    FrontService -> User: blob
+  else
+    ' Job has not finished yet, so the output doesn't exists
+    FrontService ->User: resource does not exists\n(/api/v1/job/:id/output)
+  end
+else
+  ' User is not owner of job
+  FrontService -> User: UnAuthorized
+end
+@enduml

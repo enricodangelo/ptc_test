@@ -1,0 +1,27 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+
+!include DEVICONS/nodejs_small.puml
+!include DEVICONS/mongodb.puml
+!include FONTAWESOME/users.puml
+
+
+Person(user, "Customer", "Want to apply operations to images", $sprite="users")
+
+System_Boundary(c1, "FrontService") {
+    Container(fsapi, "Web Application", "node.js", API to access FrontService, $sprite="nodejs_small")
+    Container(fsdb, "storage", "mongodb", "Stores informations about jobs", $sprite="mongodb")
+}
+Container(api1, "worker.cloud.net", , "Job submissions, job status")
+Container(api2, "worker.blob.net", , "Stores blob used by ")
+
+
+Rel(user, fsapi, "Uses", "https")
+Rel(fsapi, fsdb, "Uses", "mongodb API")
+Rel(fsapi, api1, "Uses", "REST API")
+Rel(fsapi, api2, "Uses", "REST API")
+Rel(api1, api2, "Uses", "REST API")
+@enduml

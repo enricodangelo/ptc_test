@@ -1,0 +1,27 @@
+@startuml
+
+CREATED : on user submission
+STORED: blob succesfully stored on BlobService
+STORED_ERROR: error while invoking BlobService
+SUBMITTED: job succesfully submitted to JobService
+SUBMITTED_ERROR: error while invoking JobService
+SUBMITTED_EXT_STATUS: traks all EXT_STATUSes on JobService
+EXECUTED: job reached final succesfull status on JobService
+EXECUTION_ERROR: job reached final error status on JobService
+DONE: job's output can no longer be retrieved
+
+[*] --> CREATED
+CREATED --> STORED
+CREATED --> STORED_ERROR
+
+STORED --> SUBMITTED
+STORED --> SUBMITTED_ERROR
+
+SUBMITTED --> SUBMITTED_EXT_STATUS
+SUBMITTED --> EXECUTION_ERROR
+
+SUBMITTED_EXT_STATUS --> EXECUTED
+SUBMITTED_EXT_STATUS --> EXECUTION_ERROR
+
+EXECUTED --> DONE
+@enduml
