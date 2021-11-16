@@ -7,7 +7,6 @@
 !include DEVICONS/nodejs_small.puml
 !include FONTAWESOME/users.puml
 
-
 Person(user, "Customer", "Want to apply operations to images", $sprite="users")
 
 Container(fs, "FrontService", "node.js", "The main interface that the customer interacts with", $sprite="nodejs_small")
@@ -18,6 +17,6 @@ Container(api2, "worker.blob.net", , "Stores blob used by ")
 
 Rel(user, fs, "Uses", "https")
 Rel(fs, api1, "Uses", "REST API")
-Rel(spa, api2, "Uses", "REST API")
+Rel(fs, api2, "Uses", "REST API")
 Rel(api1, api2, "Uses", "REST API")
 @enduml

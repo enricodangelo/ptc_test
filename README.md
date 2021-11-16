@@ -13,11 +13,11 @@ The *FrontService* is the interface to the 2 worker services:
 
 High level view of *FrontService*, *BlobService* and *JobService*.
 
-![context diagram](out/diagrams/context/context.png?raw=true)
+![context diagram](out/diagrams/c4_context/c4_context.png?raw=true)
 
 Internal view of components in *FrontService*.
 
-![container diagram](out/diagrams/FrontService/FrontService.png?raw=true)
+![container diagram](out/diagrams/c4_container/c4_container.png?raw=true)
 
 ### API
 
@@ -29,20 +29,20 @@ Internal view of components in *FrontService*.
 
 Jobs in *FrontService* can change status as illustrated in the following diagram.
 
-![job statuses](out/diagrams/FrontService_JobStatus/FrontService_JobStatus.png?raw=true)
+![job statuses](out/diagrams/jobStatus_state_diagram/jobStatus_state_diagram.png?raw=true)
 
 
 ### Use Cases
 
 #### post a new job
 
-![post a new job sequence diagram](out/diagrams/postjob_ok_sequence/postjob_ok_sequence.png?raw=true)
+![post a new job sequence diagram](out/diagrams/postjob_ok_sequence_diagram/postjob_ok_sequence_diagram.png?raw=true)
 
 #### get job's output
 
-![get job's output sequence diagram](out/diagrams/getjob_ok_sequence/getjob_ok_sequence.png?raw=true)
+![get job's output sequence diagram](out/diagrams/getjob_ok_sequence_diagram/getjob_ok_sequence_diagram.png?raw=true)
 
 #### get job status
 
-![get job status sequence diagram](out/diagrams/getstatus_ok_sequence/getstatus_ok_sequence.png?raw=true)
+![get job status sequence diagram](out/diagrams/getstatus_ok_sequence_diagram/getstatus_ok_sequence_diagram.png?raw=true)
 
