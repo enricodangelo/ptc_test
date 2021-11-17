@@ -2,7 +2,7 @@ import { IJobService, JS_JOB_STATUS } from "./IJobService";
 import { JSError, JSERROR_TYPE } from "./JSError";
 import { JSJob } from "./JSJob";
 
-export class JobService implements IJobService {
+export class JobServiceMock implements IJobService {
   private nextId: number = 1;
 
   async postJob(blobId: number): Promise<JSJob | JSError> {

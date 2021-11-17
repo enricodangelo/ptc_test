@@ -3,7 +3,7 @@ import { BSBlobInput } from "./BSBlobInput";
 import { BSBlobOutput } from "./BSBlobOutput";
 import { IBlobService } from "./IBlobService";
 
-export class BlobService implements IBlobService {
+export class BlobServiceMock implements IBlobService {
   async postNewBlob(blob: BSBlobInput): Promise<numnber | BSError> {
 
   }

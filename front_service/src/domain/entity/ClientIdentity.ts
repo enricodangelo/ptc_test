@@ -7,6 +7,10 @@ export class ClientIdentity {
     this.tenentId = tenentId;
   }
 
+  equals(other: ClientIdentity): boolean {
+    return this.clientId === other.clientId && this.tenentId === other.tenentId;
+  }
+
   toString(): string {
     return JSON.stringify(this);
   }

@@ -1,30 +1,31 @@
 import express from 'express';
-import { StatusCodes } from 'http-status-codes';
 import { default as expressWinston } from 'express-winston';
 import { default as winston } from 'winston';
-
-
+import bodyParser from "body-parser";
+import helmet from "helmet";
+import cors from "cors";
+import { FSRouter } from './route';
 
 export class HTTPServer {
   private _port: number;
   private _app: express.Express;
+  private fsRouter: FSRouter;
 
-  constructor(port: number) {
+  constructor(port: number, fsRouter: FSRouter) {
     this._port = port;
     this._app = express();
+    this.fsRouter = fsRouter;
   }
 
   init() {
     this.initializeLogger(this._app);
 
-    /* mount all routes to API version 1 */
-    this.registerRoutes();
-  }
+    this._app.use(cors());
+    this._app.use(helmet());
+    this._app.use(bodyParser.json());
 
-  registerRoutes(): void {
-    this._app.use('/api/v1/job', postJobHandler);
-    this._app.use('/api/v1/job/:id', getJobStatusHandler);
-    this._app.use('/api/v1/job/:id/output', getJobOutputHandler);
+    //Set all routes from routes folder
+    this._app.use("/", this.fsRouter.getRouter);
   }
 
   initializeLogger(app: express.Express): void {
@@ -49,12 +50,3 @@ export class HTTPServer {
     console.log(`HTTPServer running at https://localhost:${this._port}`);
   }
 }
-
-(async () => {
-  const server = new ExpressServer(parseInt(process.argv[2]));
-
-  server.init();
-  await server.start();
-})().catch((error) => {
-  console.log(JSON.stringify(error));
-});

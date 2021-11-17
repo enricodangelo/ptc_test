@@ -19,6 +19,7 @@ export class CreateNewJob {
     this.jobService = jobService;
   }
 
+
   public async createNewJob({ clientId, tenentId }: { clientId: string, tenentId: string }): Promise<SavedJob> {
     // create job
     const newJob: Job = Job.createNewJob(new ClientIdentity(clientId, tenentId));
@@ -31,9 +32,9 @@ export class CreateNewJob {
     return savedJob;
   }
 
-  public async submitNewBlob({ job, base64Content, mimetype, length }: { job: SavedJob, base64Content: string, mimetype: string, length: number }): Promise<void> {
+  public async submitNewBlob({ job, base64Content, mimetype }: { job: SavedJob, base64Content: string, mimetype: string }): Promise<void> {
     // submit blob
-    const bsResponse: number | BSError = await this.blobService.postNewBlob({ base64Content: base64Content, mimetype: mimetype, length: length });
+    const bsResponse: number | BSError = await this.blobService.postNewBlob({ base64Content: base64Content, mimetype: mimetype, length: base64Content.length });
 
     // check error on BlobService
     if (bsResponse instanceof BSError) {
@@ -61,7 +62,5 @@ export class CreateNewJob {
     // update job info
     job.jobSubmitted(jsResponse.id, jsResponse.status);
     await this.jobRepository.update(job);
-
-    return;
   }
 }

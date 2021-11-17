@@ -104,6 +104,10 @@ export class Job {
   canTrustLocalStatus(): boolean {
     return this.extJobId === undefined || this._status === JOB_STATUS.STORED_ERROR || this._status === JOB_STATUS.SUBMITTED_ERROR || this._status === JOB_STATUS.EXECUTION_ERROR || this._status === JOB_STATUS.EXECUTION_COMPLETED;
   }
+
+  isOutputReady(): boolean {
+    return this._status === JOB_STATUS.EXECUTION_COMPLETED;
+  }
 }
 
 export class SavedJob extends Job {
