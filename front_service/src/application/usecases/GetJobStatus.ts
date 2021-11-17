@@ -1,7 +1,6 @@
 import { JOB_STATUS, SavedJob } from "../../domain/entity/Job";
 import { JobId } from "../../domain/entity/JobId";
 import { IJobRepository } from "../../domain/repository/IJobRepository";
-import { IBlobService } from "../../infrastructure/blobService/IBlobService";
 import { IJobService, JS_JOB_STATUS } from "../../infrastructure/jobService/IJobService";
 import { JSError } from "../../infrastructure/jobService/JSError";
 import { FSERROR } from "../../util/FSError";
@@ -17,26 +16,30 @@ export class GetJobStatus {
   }
 
   async getJobStatus({ id }: { id: JobId }): Promise<JOB_STATUS> {
+    Logger.log(`GetJobStatus UseCase: ${id}`);
     const job: SavedJob | undefined = await this.jobRepository.findJobById(id);
     if (!job) {
+      Logger.log(`GetJobStatus UseCase: job not found: ${id}`);
       throw new Error(FSERROR.NOT_FOUND);
     }
 
     if (job.canTrustLocalStatus()) {
+      Logger.log(`GetJobStatus UseCase: using local status (${job.status}): ${id}`);
       return job.status;
     }
 
     if (!job.extJobId) {
+      Logger.log(`GetJobStatus UseCase: should never happen, extJobId should be defined here: ${id}`);
       throw new Error(FSERROR.DOMAIN_ERROR);
     }
     const jsResponse: JS_JOB_STATUS | JSError = await this.jobService.getJobStatus(job.extJobId);
 
     // check error on JobService
     if (jsResponse instanceof JSError) {
+      Logger.log(`GetJobStatus UseCase: received error (${JSON.stringify(jsResponse)}) from JobService ${id}`);
       const error = new Error(jsResponse.message);
       error.name = jsResponse.type;
       throw error;
-      // Logger.log(`An error occured while submitting job ${job.id}: ${jsResponse.message}`);
     }
 
     // update job's status
@@ -52,6 +55,7 @@ export class GetJobStatus {
         break;
     }
     await this.jobRepository.update(job);
+    Logger.log(`GetJobStatus UseCase: updated status from JobService (${job.status}) ${id}`);
 
     return job.status;
   }

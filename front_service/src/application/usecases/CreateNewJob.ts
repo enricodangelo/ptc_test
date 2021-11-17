@@ -6,6 +6,7 @@ import { Logger } from "../../util/Logger";
 import { BSError } from "../../infrastructure/blobService/BSError";
 import { IJobService } from "../../infrastructure/jobService/IJobService";
 import { JSError } from "../../infrastructure/jobService/JSError";
+import { JSJob } from "../../infrastructure/jobService/JSJob";
 
 export class CreateNewJob {
   private jobRepository: IJobRepository;
@@ -30,9 +31,9 @@ export class CreateNewJob {
     return savedJob;
   }
 
-  public async submitNewJob({ job, base64Content, mimetype, length }: { job: SavedJob, base64Content: string, mimetype: string, length: number }): Promise<void> {
+  public async submitNewBlob({ job, base64Content, mimetype, length }: { job: SavedJob, base64Content: string, mimetype: string, length: number }): Promise<void> {
     // submit blob
-    const bsResponse: string | BSError = await this.blobService.postNewBlob({ base64Content: base64Content, mimetype: mimetype, length: length });
+    const bsResponse: number | BSError = await this.blobService.postNewBlob({ base64Content: base64Content, mimetype: mimetype, length: length });
 
     // check error on BlobService
     if (bsResponse instanceof BSError) {
@@ -47,7 +48,7 @@ export class CreateNewJob {
     job = await this.jobRepository.update(job);
 
     // submitting job
-    const jsResponse: string | JSError = await this.jobService.postJob(job.extBlobId!);
+    const jsResponse: JSJob | JSError = await this.jobService.postJob(job.extBlobId!);
 
     // check error on JobService
     if (jsResponse instanceof JSError) {
@@ -58,7 +59,7 @@ export class CreateNewJob {
     }
 
     // update job info
-    job.jobSubmitted(jsResponse);
+    job.jobSubmitted(jsResponse.id, jsResponse.status);
     await this.jobRepository.update(job);
 
     return;

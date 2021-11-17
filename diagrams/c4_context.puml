@@ -1,5 +1,5 @@
 @startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
 !define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
@@ -10,14 +10,14 @@
 
 Person(user, "Customer", "Want to apply operations to images", $sprite="users")
 
-Container(fs, "FrontService", "node.js", "The main interface that the customer interacts with", $sprite="nodejs_small")
+System(fs, "FrontService", "node.js", "The main interface that the customer interacts with", $sprite="nodejs_small")
 
-Container(jsapi, "worker.cloud.net", "API", "Job submissions, job status", $sprite="server")
-Container(bsapi, "worker.blob.net", "API", "Stores blob", $sprite="server")
+System_Ext(jsapi, "JobService", "API worker.blob.net", "Job submissions, job status", $sprite="server")
+System_Ext(bsapi, "BlobService", "API worker.blob.net", "Stores blob", $sprite="server")
 
 
 Rel(user, fs, "Uses", "https")
 Rel(fs, jsapi, "Uses", "REST API")
 Rel(fs, bsapi, "Uses", "REST API")
-Rel(jsapi, bsapi, "Uses", "REST API")
+Rel_R(jsapi, bsapi, "Uses", "REST API")
 @enduml

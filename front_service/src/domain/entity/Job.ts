@@ -1,3 +1,4 @@
+import { JS_JOB_STATUS } from "../../infrastructure/jobService/IJobService";
 import { ClientIdentity } from "./ClientIdentity";
 import { JobId } from "./JobId";
 
@@ -13,14 +14,14 @@ export enum JOB_STATUS {
 
 export class Job {
   readonly clientIdentity: ClientIdentity;
-  private _extJobId?: string;
-  private _extBlobId?: string;
+  private _extJobId?: number;
+  private _extBlobId?: number;
   private _status: JOB_STATUS;
 
   protected constructor(
     clientIdentity: ClientIdentity,
-    extJobId: string | undefined,
-    extBlobId: string | undefined,
+    extJobId: number | undefined,
+    extBlobId: number | undefined,
     status: JOB_STATUS,) {
     this.clientIdentity = clientIdentity;
     this._extJobId = extJobId;
@@ -32,11 +33,11 @@ export class Job {
     return new Job(clientIdentity, undefined, undefined, JOB_STATUS.CREATED);
   }
 
-  get extJobId(): string | undefined {
+  get extJobId(): number | undefined {
     return this._extJobId;
   }
 
-  get extBlobId(): string | undefined {
+  get extBlobId(): number | undefined {
     return this._extBlobId;
   }
 
@@ -44,7 +45,7 @@ export class Job {
     return this._status;
   }
 
-  blobStored(extJobId: string): JOB_STATUS {
+  blobStored(extJobId: number): JOB_STATUS {
     if (this._extJobId) {
       throw new Error(`The blob for this job has already been submitted.`);
     }
@@ -58,12 +59,26 @@ export class Job {
     return this._status;
   }
 
-  jobSubmitted(extBlobId: string) {
+  jobSubmitted(extBlobId: number, jsJobStatus: JS_JOB_STATUS): JOB_STATUS {
     if (this._extBlobId) {
       throw new Error(`This job has already been submitted.`);
     }
     this._extBlobId = extBlobId;
-    this._status = JOB_STATUS.SUBMITTED
+
+    // update status depending on JS status after submitting
+    switch (jsJobStatus) {
+      case JS_JOB_STATUS.FAILED:
+        this._status = JOB_STATUS.SUBMITTED_ERROR
+        break;
+      case JS_JOB_STATUS.RUNNING:
+        this._status = JOB_STATUS.SUBMITTED
+        break;
+      case JS_JOB_STATUS.SUCCESS:
+        this._status = JOB_STATUS.EXECUTION_COMPLETED
+        break;
+    }
+
+    return this._status;
   }
 
   errorSubmittingJob(): JOB_STATUS {

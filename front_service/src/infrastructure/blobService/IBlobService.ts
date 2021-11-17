@@ -1,7 +1,8 @@
 import { BSError } from "./BSError";
-import { BSBlob } from "./FSBlob";
+import { BSBlobInput } from "./BSBlobInput";
+import { BSBlobOutput } from "./BSBlobOutput";
 
 export interface IBlobService {
-  postNewBlob(blob: BSBlob): Promise<string | BSError>;
-  getBlob(blobId: string): Promise<BSBlob | BSError>;
+  postNewBlob(blob: BSBlobInput): Promise<number | BSError>;
+  getBlob(blobId: number): Promise<BSBlobOutput | BSError>;
 }

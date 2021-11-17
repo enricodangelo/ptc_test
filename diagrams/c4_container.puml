@@ -14,15 +14,15 @@ Person(user, "Customer", "Want to apply operations to images", $sprite="users")
 
 System_Boundary(c1, "FrontService") {
     Container(fsapi, "Web Application", "node.js", API to access FrontService, $sprite="nodejs_small")
-    Container(fsdb, "storage", "mongodb", "Stores informations about jobs", $sprite="mongodb")
+    ContainerDb(fsdb, "storage", "mongodb", "Stores informations about jobs", $sprite="mongodb")
 }
 Container(jsapi, "worker.cloud.net", "API", "Job submissions, job status", $sprite="server")
 Container(bsapi, "worker.blob.net", "API", "Stores blob", $sprite="server")
 
 
 Rel(user, fsapi, "Uses", "https")
-Rel(fsapi, fsdb, "Uses", "mongodb API")
+Rel_R(fsapi, fsdb, "Uses", "mongodb API")
 Rel(fsapi, jsapi, "Uses", "REST API")
 Rel(fsapi, bsapi, "Uses", "REST API")
-Rel(jsapi, bsapi, "Uses", "REST API")
+Rel_R(jsapi, bsapi, "Uses", "REST API")
 @enduml
