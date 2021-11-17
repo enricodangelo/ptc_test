@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build": "tsc -p tsconfig.json",
+    "compile": "tsc -p tsconfig.json",
+    "copy-env-file": "cp *.env dist/",
+    "build": "npm run compile && npm run copy-env-file",
     "start": "node dist/src/app.js"
   },
   "repository": {

@@ -1,22 +1,21 @@
-import { Router } from "express";
-import { JobController } from "../controller/JobController";
-import { checkJwt } from "../middleware/checkJwt";
+import { Router, Request, Response } from "express";
+import { jwtValidatorMiddleware } from "../middleware/JwtValidatorMiddleware";
 
-export class JobRouter {
-  private jobController: JobController;
+export async function getJobRouter({
+  createNewJobHAndler,
+  getJobStatusHandler,
+  getJobOutputHandler}:
+   {
+     createNewJobHAndler: (req: Request, res: Response) => Promise<void>,
+     getJobStatusHandler: (req: Request, res: Response) => Promise<void>,
+     getJobOutputHandler: (req: Request, res: Response) => Promise<void>
+    }
+  ): Promise<Router> {
+  const jobRouter = Router();
 
-  constructor(jobController: JobController) {
-    this.jobController = jobController;
-  }
+  jobRouter.post("/", [jwtValidatorMiddleware], createNewJobHAndler);
+  jobRouter.get("/:jobId/status", [jwtValidatorMiddleware], getJobStatusHandler);
+  jobRouter.get("/:jobId/output", [jwtValidatorMiddleware],getJobOutputHandler);
 
-  getRouter(): Router {
-    const router = Router();
-
-    //Change my password
-    router.post("/", [checkJwt], this.jobController.createNewJob.bind(this.jobController));
-    router.get("/:jobId/status", [checkJwt], this.jobController.getJobStatus.bind(this.jobController));
-    router.get("/:jobId/output", [checkJwt], this.jobController.getJobOutput.bind(this.jobController));
-
-    return router;
-  }
+  return jobRouter;
 }
