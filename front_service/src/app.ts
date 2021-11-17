@@ -3,13 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { default as expressWinston } from 'express-winston';
 import { default as winston } from 'winston';
 
-function postJob(req: express.Request, res: express.Response) {
-  res.sendStatus(StatusCodes.OK);
-}
-
-function getJobStatus(req: express.Request, res: express.Response) {
-  res.sendStatus(StatusCodes.OK);
-}
+// TODO should be configured with an application Id
 
 export class ExpressServer {
   private _port: number;

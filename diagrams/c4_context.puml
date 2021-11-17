@@ -6,17 +6,18 @@
 
 !include DEVICONS/nodejs_small.puml
 !include FONTAWESOME/users.puml
+!include FONTAWESOME/server.puml
 
 Person(user, "Customer", "Want to apply operations to images", $sprite="users")
 
 Container(fs, "FrontService", "node.js", "The main interface that the customer interacts with", $sprite="nodejs_small")
 
-Container(api1, "worker.cloud.net", , "Job submissions, job status")
-Container(api2, "worker.blob.net", , "Stores blob used by ")
+Container(jsapi, "worker.cloud.net", "API", "Job submissions, job status", $sprite="server")
+Container(bsapi, "worker.blob.net", "API", "Stores blob", $sprite="server")
 
 
 Rel(user, fs, "Uses", "https")
-Rel(fs, api1, "Uses", "REST API")
-Rel(fs, api2, "Uses", "REST API")
-Rel(api1, api2, "Uses", "REST API")
+Rel(fs, jsapi, "Uses", "REST API")
+Rel(fs, bsapi, "Uses", "REST API")
+Rel(jsapi, bsapi, "Uses", "REST API")
 @enduml

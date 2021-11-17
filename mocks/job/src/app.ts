@@ -3,12 +3,21 @@ import { StatusCodes } from 'http-status-codes';
 import { default as expressWinston } from 'express-winston';
 import { default as winston } from 'winston';
 
+let nextId: number = 1;
+const statuses: string[] = ['CLOUD_STARTED', 'CLOUD_EXECUTING', 'CLOUD_DONE', 'CLOUD_ERROR'];
+
 function postJob(req: express.Request, res: express.Response) {
-  res.sendStatus(StatusCodes.OK);
+  if (Math.random() < 0.5) {
+    res.status(StatusCodes.OK).send({id: nextId++, status: statuses[0]});
+  } else {
+    res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
 }
 
-function getJobStatus(req: express.Request, res: express.Response) {
-  res.sendStatus(StatusCodes.OK);
+function getJobStatus(req: express.Request, res: express.Response) {  
+  const id: number = parseInt(req.params["id"]);
+  let status: String = statuses[id % statuses.length];
+  res.status(StatusCodes.OK).send({ id: id, status: status });
 }
 
 export class ExpressServer {
@@ -56,7 +65,7 @@ export class ExpressServer {
 }
 
 (async () => {
-  const server = new ExpressServer(parseInt(process.argv[2]));
+  const server = new ExpressServer(parseInt(process.argv[2]) || 9001);
 
   server.init();
   await server.start();
