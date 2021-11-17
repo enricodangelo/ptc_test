@@ -11,7 +11,7 @@ export type JwtConf = {
   CLIENT_ID: string;
 }
 
-const httpConfSchema = Joi.object({
+const httpServerConfSchema = Joi.object({
   PORT: Joi.number().required()
 }).required();
 
@@ -22,7 +22,7 @@ const jwtConfSchema = Joi.object({
 export class Configuration {
   private static _instance?: Configuration;
   private static httpServerConfKey = 'HTTP';
-  private static jwtConfKey ='JWT';
+  private static jwtConfKey = 'JWT';
   readonly httpServerConf: HTTPServerConf;
   readonly jwtConf: JwtConf;
 
@@ -59,7 +59,7 @@ export class Configuration {
   }
 
   private static validateHTTPServerConf(httpServerConf: any): HTTPServerConf {
-    const res: ValidationResult = httpConfSchema.validate(httpServerConf);
+    const res: ValidationResult = httpServerConfSchema.validate(httpServerConf);
     if (res.error) {
       throw new Error(`HTTPServerConf validation error: ${JSON.stringify(res.error.details)}`);
     }

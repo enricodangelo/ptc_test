@@ -14,7 +14,7 @@ function postJob(req: express.Request, res: express.Response) {
   }
 }
 
-function getJobStatus(req: express.Request, res: express.Response) {  
+function getJobStatus(req: express.Request, res: express.Response) {
   const id: number = parseInt(req.params["id"]);
   let status: String = statuses[id % statuses.length];
   res.status(StatusCodes.OK).send({ id: id, status: status });
