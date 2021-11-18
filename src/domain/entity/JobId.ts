@@ -1,16 +1,17 @@
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { EntityId } from './EntityId';
 
-export class JobId extends EntityId<string> {
-  constructor(id: string) {
+export class JobId extends EntityId<number> {
+  private static nextId = 1;
+
+  constructor(id: number) {
     super('Employee', id);
   }
 
-  validateInput(value: string): boolean {
-    return uuidValidate(value);
+  validateInput(value: number): boolean {
+    return !isNaN(value);
   }
 
   static getNext(): JobId {
-    return new JobId(uuidv4());
+    return new JobId(JobId.nextId++);
   }
 }

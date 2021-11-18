@@ -12,25 +12,37 @@ export enum JOB_STATUS {
   EXECUTION_ERROR = 'EXECUTION_ERROR',
 }
 
+export class ContentInfo {
+  readonly mimeType: string;
+  readonly length: number;
+
+  constructor(mimeType: string, length: number) {
+    this.mimeType = mimeType;
+    this.length = length
+  }
+}
 export class Job {
   readonly clientIdentity: ClientIdentity;
   private _extJobId?: number;
   private _extBlobId?: number;
+  private _contentInfo?: ContentInfo;
   private _status: JOB_STATUS;
 
   protected constructor(
     clientIdentity: ClientIdentity,
     extJobId: number | undefined,
     extBlobId: number | undefined,
+    contentInfo: ContentInfo | undefined,
     status: JOB_STATUS,) {
     this.clientIdentity = clientIdentity;
     this._extJobId = extJobId;
     this._extBlobId = extBlobId;
+    this._contentInfo = contentInfo;
     this._status = status;
   }
 
   static createNewJob(clientIdentity: ClientIdentity): Job {
-    return new Job(clientIdentity, undefined, undefined, JOB_STATUS.CREATED);
+    return new Job(clientIdentity, undefined, undefined, undefined, JOB_STATUS.CREATED);
   }
 
   get extJobId(): number | undefined {
@@ -41,15 +53,20 @@ export class Job {
     return this._extBlobId;
   }
 
+  get contentInfo(): ContentInfo | undefined {
+    return this._contentInfo;
+  }
+
   get status(): JOB_STATUS {
     return this._status;
   }
 
-  blobStored(extJobId: number): JOB_STATUS {
+  blobStored(extJobId: number, contentInfo: ContentInfo): JOB_STATUS {
     if (this._extJobId) {
       throw new Error(`The blob for this job has already been submitted.`);
     }
     this._extJobId = extJobId;
+    this._contentInfo = contentInfo;
     this._status = JOB_STATUS.STORED
     return this._status;
   }
@@ -116,7 +133,7 @@ export class SavedJob extends Job {
   private _updatedAt: Date;
 
   constructor(id: JobId, createdAt: Date, updatedAt: Date, job: Job) {
-    super(job.clientIdentity, job.extJobId, job.extBlobId, job.status);
+    super(job.clientIdentity, job.extJobId, job.extBlobId, job.contentInfo, job.status);
     this.id = id;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;

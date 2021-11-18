@@ -1,5 +1,5 @@
 import { ClientIdentity } from "../../domain/entity/ClientIdentity";
-import { Job, SavedJob } from "../../domain/entity/Job";
+import { ContentInfo, Job, SavedJob } from "../../domain/entity/Job";
 import { IJobRepository } from "../../domain/repository/IJobRepository";
 import { IBlobService } from "../../infrastructure/blobService/IBlobService";
 import { Logger } from "../../util/Logger";
@@ -45,7 +45,7 @@ export class CreateNewJob {
     }
 
     // update blob info
-    job.blobStored(bsResponse);
+    job.blobStored(bsResponse, new ContentInfo(mimetype, base64Content.length));
     job = await this.jobRepository.update(job);
 
     // submitting job

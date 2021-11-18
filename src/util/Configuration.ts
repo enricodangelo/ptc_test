@@ -8,7 +8,7 @@ export type HTTPServerConf = {
 };
 
 export type JwtConf = {
-  CLIENT_ID: string;
+  AUDIENCE: string;
 }
 
 const httpServerConfSchema = Joi.object({
@@ -16,7 +16,7 @@ const httpServerConfSchema = Joi.object({
 }).required();
 
 const jwtConfSchema = Joi.object({
-  CLIENT_ID: Joi.string().required()
+  AUDIENCE: Joi.string().required()
 }).required();
 
 export class Configuration {

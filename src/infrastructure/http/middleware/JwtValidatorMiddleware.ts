@@ -8,7 +8,7 @@ export const jwtValidatorMiddleware = (req: Request, res: Response, next: NextFu
   // check token presence
   const authHeader: string | string[] | undefined = <string>req.headers['authorization'];
   const token = authHeader && authHeader.split('Bearer ')[1]  // bearer token
-  Logger.log(`Brearer token from request: ${token}`);
+  Logger.debug(`Brearer token from request: ${token}`);
 
   if (!token) {
     res.sendStatus(StatusCodes.UNAUTHORIZED);
@@ -18,13 +18,26 @@ export const jwtValidatorMiddleware = (req: Request, res: Response, next: NextFu
   try {
     // should call verify instead of decode to actually validate the token
     const jwtPayload: any = jwt.decode(token);
-    Logger.log(`Decoded jwt token from request: ${JSON.stringify(jwtPayload)}`);
-    if (Configuration.getInstance().jwtConf.CLIENT_ID !== jwtPayload.azp) {
-      res.sendStatus(StatusCodes.FORBIDDEN);
+    Logger.debug(`Decoded jwt token from request: ${JSON.stringify(jwtPayload)}`);
+
+    // simple check for audience in jwt token
+    let audiences: string | string[] = jwtPayload.aud;
+    if (!(audiences instanceof Array)) {
+      audiences = [audiences];
+    }
+    let audienceMatchs: boolean = false;
+    for (const audience of audiences) {
+      if (Configuration.getInstance().jwtConf.AUDIENCE === jwtPayload.aud) {
+        audienceMatchs = true;
+      }
+    }
+    if (!audienceMatchs) {
+      res.status(StatusCodes.FORBIDDEN).send('Wrong audience');
       return;
     }
+
     res.locals.jwtPayload = jwtPayload;
-    Logger.log(`Brearer token ok`);
+    Logger.debug(`Brearer token ok`);
   } catch (error) {
     res.sendStatus(StatusCodes.UNAUTHORIZED);
     return;

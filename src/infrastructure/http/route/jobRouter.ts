@@ -1,5 +1,8 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response,NextFunction } from "express";
+import { inputValidatorMiddleware } from "../middleware/inputValidatorMiddleware";
 import { jwtValidatorMiddleware } from "../middleware/JwtValidatorMiddleware";
+import { pathValidatorMiddleware } from "../middleware/pathValidatorMiddleware";
+import { JobIDParamSchema, JobInputSchema } from "../validator/jobControllerValidator";
 
 export async function getJobRouter({
   createNewJobHAndler,
@@ -13,9 +16,12 @@ export async function getJobRouter({
   ): Promise<Router> {
   const jobRouter = Router();
 
-  jobRouter.post("/", [jwtValidatorMiddleware], createNewJobHAndler);
-  jobRouter.get("/:jobId/status", [jwtValidatorMiddleware], getJobStatusHandler);
-  jobRouter.get("/:jobId/output", [jwtValidatorMiddleware],getJobOutputHandler);
+  const postJobValidator: (req: Request, res: Response, next: NextFunction) => Promise<void> = inputValidatorMiddleware(JobInputSchema);
+  const pathJobIdValidator: (req: Request, res: Response, next: NextFunction) => Promise<void> = pathValidatorMiddleware(JobIDParamSchema, 'jobId');
+  
+  jobRouter.post("/", [jwtValidatorMiddleware, postJobValidator], createNewJobHAndler);
+  jobRouter.get("/:jobId/status", [jwtValidatorMiddleware, pathJobIdValidator ], getJobStatusHandler);
+  jobRouter.get("/:jobId/output", [jwtValidatorMiddleware, pathJobIdValidator ],getJobOutputHandler);
 
   return jobRouter;
 }

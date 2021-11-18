@@ -7,7 +7,7 @@ import { GetJobStatus } from "../../../application/usecases/GetJobStatus";
 import { ClientIdentity } from "../../../domain/entity/ClientIdentity";
 import { JOB_STATUS, SavedJob } from "../../../domain/entity/Job";
 import { JobId } from "../../../domain/entity/JobId";
-import { JobOutput } from "../../../domain/entity/JobOutput";s
+import { JobOutput } from "../../../domain/entity/JobOutput";
 import { Logger } from "../../../util/Logger";
 import { checkMD5 } from "../../../util/MD5Utils";
 import { PTCError, PTCERROR_TYPE } from "../../../util/PTCError";
@@ -71,16 +71,16 @@ export class JobController {
   static getJobStatus = async (getJobStatusUseCase: GetJobStatus) => {
     return async (req: Request, res: Response) => {
       try {
-        let { id } = req.params;
+        let { jobId } = req.params;
         let { clientId, tenentId } = res.locals.jwtPayload;
 
         const status: JOB_STATUS = await getJobStatusUseCase.getJobStatus({
-          id: new JobId(id),
+          id: new JobId(parseInt(jobId)),
           clientIdentity: new ClientIdentity(clientId, tenentId)
         });
 
         res.status(StatusCodes.OK).send({
-          id: id,
+          id: jobId,
           status: status
         });
       } catch (error) {
@@ -115,11 +115,11 @@ export class JobController {
   static getJobOutput = async (getJobOutputUseCase: GetJobOutput) => {
     return async (req: Request, res: Response) => {
       try {
-        let { id } = req.params;
+        let { jobId } = req.params;
         let { clientId, tenentId } = res.locals.jwtPayload;
 
         const jobOutput: JobOutput = await getJobOutputUseCase.getJobOutput({
-          id: new JobId(id),
+          id: new JobId(parseInt(jobId)),
           clientIdentity: new ClientIdentity(clientId, tenentId)
         });
 

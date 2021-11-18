@@ -2,7 +2,7 @@ import { default as winston } from 'winston';
 
 export class Logger {
   private static logger = winston.createLogger({
-    level: 'info',
+    level: 'debug',
     format: winston.format.json(),
     defaultMeta: { service: 'FrontService' },
     transports: [
