@@ -81,7 +81,17 @@ In all the other cases *FrontService* asks *JobService* for the status of the co
 
 ![get job output, completed](out/diagrams/getjob_completed_unknown_sequence_diagram/getjob_completed_unknown_sequence_diagram.png?raw=true)
 
+### Authentication & Authorization
+
+Each API endpoint is authenticated via a Bearer JWT token. Since this is a poc only a few simple checks are done, and the token is not verified.
+
+The poc checks that the audience provided in the token matches the one configured.
+
+The pair `tenentId` and `clientId` from the JWT token are used to identify the users, they are attached to each created job and check before accessing it, only the user that created a job can retrieve it's status and output.
 #### Assumptions
 
 - *BlobService* never deletes a blob unless he's told so, but that use case is out of scope, that means that one stored a blob will always be found.
 - *JobService* will overwrite the input blob with the output of its elaboration. That simplifies the communication between the systems but doesn't change the solution.
+
+### Further work
+

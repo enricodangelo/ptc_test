@@ -1,4 +1,4 @@
-export type EntityType = 'Company' | 'Employee';
+export type EntityType = 'Job';
 
 export abstract class EntityId<T> {
   readonly type: EntityType;

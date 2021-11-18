@@ -4,7 +4,7 @@ export class JobId extends EntityId<number> {
   private static nextId = 1;
 
   constructor(id: number) {
-    super('Employee', id);
+    super('Job', id);
   }
 
   validateInput(value: number): boolean {
