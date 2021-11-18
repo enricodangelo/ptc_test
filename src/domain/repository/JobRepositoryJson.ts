@@ -1,11 +1,11 @@
-import { PTCError, PTCERROR_TYPE } from "../../util/PTCError";
-import { Job, SavedJob } from "../entity/Job";
-import { JobId } from "../entity/JobId";
-import { IJobRepository } from "./IJobRepository";
+import { PTCError, PTCERROR_TYPE } from '../../util/PTCError';
+import { Job, SavedJob } from '../entity/Job';
+import { JobId } from '../entity/JobId';
+import { IJobRepository } from './IJobRepository';
 
 type JobRepoType = {
   [jobId: string]: SavedJob;
-}
+};
 
 export class JobRepositoryJson implements IJobRepository {
   private db: JobRepoType;

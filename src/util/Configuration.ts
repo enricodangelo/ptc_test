@@ -9,7 +9,7 @@ export type HTTPServerConf = {
 
 export type JwtConf = {
   AUDIENCE: string;
-}
+};
 
 const httpServerConfSchema = Joi.object({
   PORT: Joi.number().required()

@@ -1,5 +1,5 @@
-import { Job, SavedJob } from "../entity/Job";
-import { JobId } from "../entity/JobId";
+import { Job, SavedJob } from '../entity/Job';
+import { JobId } from '../entity/JobId';
 
 export interface IJobRepository {
   save(job: Job): Promise<SavedJob>;

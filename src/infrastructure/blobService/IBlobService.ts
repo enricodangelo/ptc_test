@@ -1,6 +1,6 @@
-import { BSError } from "./BSError";
-import { BSBlobInput } from "./BSBlobInput";
-import { BSBlobOutput } from "./BSBlobOutput";
+import { BSError } from './BSError';
+import { BSBlobInput } from './BSBlobInput';
+import { BSBlobOutput } from './BSBlobOutput';
 
 export interface IBlobService {
   postNewBlob(blob: BSBlobInput): Promise<number | BSError>;

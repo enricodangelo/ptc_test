@@ -1,5 +1,5 @@
-import { JSError } from "./JSError";
-import { JSJob } from "./JSJob";
+import { JSError } from './JSError';
+import { JSJob } from './JSJob';
 
 export enum JS_JOB_STATUS {
   RUNNING = `RUNNING`,

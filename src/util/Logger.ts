@@ -5,9 +5,7 @@ export class Logger {
     level: 'debug',
     format: winston.format.json(),
     defaultMeta: { service: 'FrontService' },
-    transports: [
-      new winston.transports.Console(),
-    ],
+    transports: [new winston.transports.Console()]
   });
 
   static debug(msg: string): void {
@@ -27,6 +25,6 @@ export class Logger {
   }
 
   static log(msg: string): void {
-    Logger.info(msg)
+    Logger.info(msg);
   }
 }

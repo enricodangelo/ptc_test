@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import * as jwt from "jsonwebtoken";
-import { Configuration } from "../../../util/Configuration";
-import { Logger } from "../../../util/Logger";
+import * as jwt from 'jsonwebtoken';
+import { Configuration } from '../../../util/Configuration';
+import { Logger } from '../../../util/Logger';
 
 export const jwtValidatorMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // check token presence
   const authHeader: string | string[] | undefined = <string>req.headers['authorization'];
-  const token = authHeader && authHeader.split('Bearer ')[1]  // bearer token
+  const token = authHeader && authHeader.split('Bearer ')[1]; // bearer token
   Logger.debug(`Brearer token from request: ${token}`);
 
   if (!token) {
@@ -25,7 +25,7 @@ export const jwtValidatorMiddleware = (req: Request, res: Response, next: NextFu
     if (!(audiences instanceof Array)) {
       audiences = [audiences];
     }
-    let audienceMatchs: boolean = false;
+    let audienceMatchs = false;
     for (const audience of audiences) {
       if (Configuration.getInstance().jwtConf.AUDIENCE === jwtPayload.aud) {
         audienceMatchs = true;

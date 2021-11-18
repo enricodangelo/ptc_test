@@ -1,5 +1,5 @@
 export enum JSERROR_TYPE {
- UNKNOWN = 'UNKNOWN'
+  UNKNOWN = 'UNKNOWN'
 }
 
 export class JSError {

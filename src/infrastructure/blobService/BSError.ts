@@ -1,5 +1,5 @@
 export enum BSERROR_TYPE {
- UNKNOWN = 'UNKNOWN'
+  UNKNOWN = 'UNKNOWN'
 }
 
 export class BSError {

@@ -1,5 +1,5 @@
 import { ValidationResult, AnySchema } from 'joi';
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Logger } from '../../../util/Logger';
 
@@ -13,4 +13,4 @@ export const pathValidatorMiddleware = (schema: AnySchema, paramKey: string) => 
       next();
     }
   };
-}
+};

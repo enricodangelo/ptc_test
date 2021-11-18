@@ -7,12 +7,14 @@ A client is submitting jobs to an image processing worker farm running in the cl
 The client will submit image data to your service. Your service will take this image data and create a backend "worker job object" and submit to an existing backend worker service. This worker service has an API located at `worker.cloud.net` (this can be mocked)
 Worker Service API consists of 2 urls
 
-- api/v1/job  - you can submit a job here
+- api/v1/job - you can submit a job here
 - api/v1/job/\<id>/status - you can get job status here. This will return `RUNNING`,`SUCCESS`,`FAILED`
 
 Use existing blob store - `worker.blob.net` to store binary payload (this can be mocked).
 Blob service API consists of
-- api/v1/blob  - you can put a blob here
+
+- api/v1/blob - you can put a blob here
+
   - headers :
     - `Content-Type`: The MIME content type of the blob
     - `Content-Length`: The size of the content
@@ -59,6 +61,7 @@ Service should:
 - validate and verify the message
 - Create a new Job object
 - Add following information to job
+
   - tenentId
   - clientId
   - payload / payload location

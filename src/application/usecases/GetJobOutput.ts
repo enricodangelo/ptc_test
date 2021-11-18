@@ -1,15 +1,15 @@
-import { ClientIdentity } from "../../domain/entity/ClientIdentity";
-import { SavedJob } from "../../domain/entity/Job";
-import { JobId } from "../../domain/entity/JobId";
-import { JobOutput } from "../../domain/entity/JobOutput";
-import { IJobRepository } from "../../domain/repository/IJobRepository";
-import { BSBlobOutput } from "../../infrastructure/blobService/BSBlobOutput";
-import { BSError } from "../../infrastructure/blobService/BSError";
-import { IBlobService } from "../../infrastructure/blobService/IBlobService";
-import { IJobService, JS_JOB_STATUS } from "../../infrastructure/jobService/IJobService";
-import { JSError } from "../../infrastructure/jobService/JSError";
-import { Logger } from "../../util/Logger";
-import { PTCError, PTCERROR_TYPE } from "../../util/PTCError";
+import { ClientIdentity } from '../../domain/entity/ClientIdentity';
+import { SavedJob } from '../../domain/entity/Job';
+import { JobId } from '../../domain/entity/JobId';
+import { JobOutput } from '../../domain/entity/JobOutput';
+import { IJobRepository } from '../../domain/repository/IJobRepository';
+import { BSBlobOutput } from '../../infrastructure/blobService/BSBlobOutput';
+import { BSError } from '../../infrastructure/blobService/BSError';
+import { IBlobService } from '../../infrastructure/blobService/IBlobService';
+import { IJobService, JS_JOB_STATUS } from '../../infrastructure/jobService/IJobService';
+import { JSError } from '../../infrastructure/jobService/JSError';
+import { Logger } from '../../util/Logger';
+import { PTCError, PTCERROR_TYPE } from '../../util/PTCError';
 
 export class GetJobOutput {
   private jobRepository: IJobRepository;
@@ -23,7 +23,7 @@ export class GetJobOutput {
     this.jobService = jobService;
   }
 
-  async getJobOutput({ id, clientIdentity }: { id: JobId, clientIdentity: ClientIdentity }): Promise<JobOutput> {
+  async getJobOutput({ id, clientIdentity }: { id: JobId; clientIdentity: ClientIdentity }): Promise<JobOutput> {
     Logger.log(`GetJobOutput UseCase: ${id}`);
     const job: SavedJob | undefined = await this.jobRepository.findJobById(id);
     if (!job) {
@@ -49,7 +49,10 @@ export class GetJobOutput {
       // check error on BlobService
       if (bsResponse instanceof BSError) {
         Logger.log(`GetJobOutput UseCase: received error (${JSON.stringify(bsResponse)}) from BlobService ${id}`);
-        throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `BlobService error: (${bsResponse.type}) ${bsResponse.message}`);
+        throw new PTCError(
+          PTCERROR_TYPE.EXT_SERVICE_ERROR,
+          `BlobService error: (${bsResponse.type}) ${bsResponse.message}`
+        );
       }
 
       Logger.log(`GetJobOutput UseCase: output retrieved for job ${id}`);
@@ -72,9 +75,13 @@ export class GetJobOutput {
     // check error on JobService
     if (jsResponse instanceof JSError) {
       Logger.log(`GetJobOutput UseCase: received error (${JSON.stringify(jsResponse)}) from JobService ${id}`);
-      throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `JobService error: (${jsResponse.type}) ${jsResponse.message}`);
+      throw new PTCError(
+        PTCERROR_TYPE.EXT_SERVICE_ERROR,
+        `JobService error: (${jsResponse.type}) ${jsResponse.message}`
+      );
     }
 
+    let bsResponse: BSBlobOutput | BSError;
     switch (jsResponse) {
       case JS_JOB_STATUS.FAILED:
         Logger.log(`GetJobOutput UseCase: job's output is not ready yet: ${id}`);
@@ -87,12 +94,15 @@ export class GetJobOutput {
           Logger.log(`GetJobOutput UseCase: should never happen, extJobId should be defined here: ${id}`);
           throw new PTCError(PTCERROR_TYPE.DOMAIN_ERROR, `Job ${id} should have "extBlobId" set.`);
         }
-        const bsResponse: BSBlobOutput | BSError = await this.blobService.getBlob(job.extBlobId);
+        bsResponse = await this.blobService.getBlob(job.extBlobId);
 
         // check error on BlobService
         if (bsResponse instanceof BSError) {
           Logger.log(`GetJobOutput UseCase: received error (${JSON.stringify(bsResponse)}) from BlobService ${id}`);
-          throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `BlobService error: (${bsResponse.type}) ${bsResponse.message}`);
+          throw new PTCError(
+            PTCERROR_TYPE.EXT_SERVICE_ERROR,
+            `BlobService error: (${bsResponse.type}) ${bsResponse.message}`
+          );
         }
 
         Logger.log(`GetJobOutput UseCase: output retrieved for job ${id}`);

@@ -1,6 +1,6 @@
-import { JS_JOB_STATUS } from "../../infrastructure/jobService/IJobService";
-import { ClientIdentity } from "./ClientIdentity";
-import { JobId } from "./JobId";
+import { JS_JOB_STATUS } from '../../infrastructure/jobService/IJobService';
+import { ClientIdentity } from './ClientIdentity';
+import { JobId } from './JobId';
 
 export enum JOB_STATUS {
   CREATED = 'CREATED',
@@ -9,7 +9,7 @@ export enum JOB_STATUS {
   SUBMITTED = 'SUBMITTED',
   SUBMITTED_ERROR = 'SUBMITTED_ERROR',
   EXECUTION_COMPLETED = 'EXECUTED',
-  EXECUTION_ERROR = 'EXECUTION_ERROR',
+  EXECUTION_ERROR = 'EXECUTION_ERROR'
 }
 
 export class ContentInfo {
@@ -18,7 +18,7 @@ export class ContentInfo {
 
   constructor(mimeType: string, length: number) {
     this.mimeType = mimeType;
-    this.length = length
+    this.length = length;
   }
 }
 export class Job {
@@ -33,7 +33,8 @@ export class Job {
     extJobId: number | undefined,
     extBlobId: number | undefined,
     contentInfo: ContentInfo | undefined,
-    status: JOB_STATUS,) {
+    status: JOB_STATUS
+  ) {
     this.clientIdentity = clientIdentity;
     this._extJobId = extJobId;
     this._extBlobId = extBlobId;
@@ -67,7 +68,7 @@ export class Job {
     }
     this._extJobId = extJobId;
     this._contentInfo = contentInfo;
-    this._status = JOB_STATUS.STORED
+    this._status = JOB_STATUS.STORED;
     return this._status;
   }
 
@@ -85,13 +86,13 @@ export class Job {
     // update status depending on JS status after submitting
     switch (jsJobStatus) {
       case JS_JOB_STATUS.FAILED:
-        this._status = JOB_STATUS.SUBMITTED_ERROR
+        this._status = JOB_STATUS.SUBMITTED_ERROR;
         break;
       case JS_JOB_STATUS.RUNNING:
-        this._status = JOB_STATUS.SUBMITTED
+        this._status = JOB_STATUS.SUBMITTED;
         break;
       case JS_JOB_STATUS.SUCCESS:
-        this._status = JOB_STATUS.EXECUTION_COMPLETED
+        this._status = JOB_STATUS.EXECUTION_COMPLETED;
         break;
     }
 
@@ -119,7 +120,13 @@ export class Job {
   }
 
   canTrustLocalStatus(): boolean {
-    return this.extJobId === undefined || this._status === JOB_STATUS.STORED_ERROR || this._status === JOB_STATUS.SUBMITTED_ERROR || this._status === JOB_STATUS.EXECUTION_ERROR || this._status === JOB_STATUS.EXECUTION_COMPLETED;
+    return (
+      this.extJobId === undefined ||
+      this._status === JOB_STATUS.STORED_ERROR ||
+      this._status === JOB_STATUS.SUBMITTED_ERROR ||
+      this._status === JOB_STATUS.EXECUTION_ERROR ||
+      this._status === JOB_STATUS.EXECUTION_COMPLETED
+    );
   }
 
   isOutputReady(): boolean {
@@ -127,7 +134,11 @@ export class Job {
   }
 
   isInError(): boolean {
-    return this._status === JOB_STATUS.STORED_ERROR || this._status === JOB_STATUS.SUBMITTED_ERROR || this._status === JOB_STATUS.EXECUTION_ERROR;
+    return (
+      this._status === JOB_STATUS.STORED_ERROR ||
+      this._status === JOB_STATUS.SUBMITTED_ERROR ||
+      this._status === JOB_STATUS.EXECUTION_ERROR
+    );
   }
 }
 

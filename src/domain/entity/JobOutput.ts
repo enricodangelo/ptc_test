@@ -1,5 +1,5 @@
-import { hashMD5 } from "../../util/MD5Utils";
-import { JobId } from "./JobId";
+import { hashMD5 } from '../../util/MD5Utils';
+import { JobId } from './JobId';
 
 export class JobOutput {
   readonly id: JobId;

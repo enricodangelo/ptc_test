@@ -3,4 +3,4 @@ export type BSBlobOutput = {
   base64Content: string;
   mimetype: string;
   length: number;
-}
+};

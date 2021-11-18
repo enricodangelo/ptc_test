@@ -1,4 +1,4 @@
-import { JS_JOB_STATUS } from "./IJobService";
+import { JS_JOB_STATUS } from './IJobService';
 
 export class JSJob {
   readonly id: number;

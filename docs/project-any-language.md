@@ -7,13 +7,13 @@ A client is submitting jobs to an image processing worker farm running in the cl
 The client will submit image data to your service. Your service will take this image data and create a backend "worker job object" and submit to an existing backend worker service. This worker service has an API located at `worker.cloud.net` (this can be mocked)
 Worker Service API consists of 2 urls
 
-- api/v1/job  - you can submit a job here
+- api/v1/job - you can submit a job here
 - api/v1/job/\<id>/status - you can get job status here. This will return `RUNNING`,`SUCCESS`,`FAILED`
 
 Use existing blob store - `worker.blob.net` to store binary payload (this can be mocked).
 Blob service API consists of
 
-- api/v1/blob  - you can put a blob here
+- api/v1/blob - you can put a blob here
   - headers:
     - Content-Type : The MIME content type of the blob
     - Content-Length : The size of the content
@@ -27,7 +27,6 @@ Please design and build the system to solve the problem statement and build a Pr
 The PoC should be runnable and mocks/stubs can be use for external services.
 Please highlight what additional work would need to be done to move your PoC to production code.
 
-
 Details:
 
 Client message calling your service will consist of:
@@ -40,14 +39,14 @@ Client message calling your service will consist of:
     - azp = appid
     - name = names
     - email = email
-  }
+      }
 - binary image data in json message
 - json message
-{
+  {
   "encoding" : "base64",
   "MD5" : "\<checksum>"
   "content" : "\<binary-data>""
-}
+  }
 
 Note : you can use <http://jwt.io> to encode/decode jwt tokens.
 
@@ -61,6 +60,7 @@ Service should:
 - validate and verify the message
 - Create a new Job object
 - Add following information to job
+
   - tenentId
   - clientId
   - payload / payload location
@@ -72,4 +72,3 @@ Service should:
 - Service should have api to get job results
 
 Please share working example , code and design docs in your solution.
-

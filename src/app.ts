@@ -12,7 +12,6 @@ import { IJobService } from './infrastructure/jobService/IJobService';
 import { JobServiceMock } from './infrastructure/jobService/JobServiceMock';
 import { Configuration } from './util/Configuration';
 
-
 /* save global variable "__basedir" to access project's root dir later in Configuration
    This works only if this file is located at the root of the project */
 (global as any).__basedir = path.join(__dirname, '../');

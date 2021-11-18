@@ -1,17 +1,17 @@
-import { BSError, BSERROR_TYPE } from "./BSError";
-import { BSBlobInput } from "./BSBlobInput";
-import { BSBlobOutput } from "./BSBlobOutput";
-import { IBlobService } from "./IBlobService";
-import { cats } from "./cats";
+import { BSError, BSERROR_TYPE } from './BSError';
+import { BSBlobInput } from './BSBlobInput';
+import { BSBlobOutput } from './BSBlobOutput';
+import { IBlobService } from './IBlobService';
+import { cats } from './cats';
 
 export class BlobServiceMock implements IBlobService {
-  private count: number = 1;
+  private count = 1;
 
   async postNewBlob(blob: BSBlobInput): Promise<number | BSError> {
     if (Math.random() < 0.5) {
       return this.count++;
     } else {
-      return new BSError(BSERROR_TYPE.UNKNOWN, 'Internal Server Error')
+      return new BSError(BSERROR_TYPE.UNKNOWN, 'Internal Server Error');
     }
   }
 
@@ -23,14 +23,14 @@ export class BlobServiceMock implements IBlobService {
       } else {
         content = cats[2];
       }
-      return  {
+      return {
         id: blobId,
         base64Content: content,
         mimetype: 'image/jpeg',
-        length: content.length,
-      }
+        length: content.length
+      };
     } else {
-      return new BSError(BSERROR_TYPE.UNKNOWN, 'Internal Server Error')
+      return new BSError(BSERROR_TYPE.UNKNOWN, 'Internal Server Error');
     }
   }
 }
