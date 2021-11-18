@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "3299fbc7-00e5-4c8f-9320-034ef11f5c7f",
+		"name": "PTC_TEST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Submit new job",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ0aWQiOjEsIm9pZCI6MSwiYXVkIjoiY29tLmNvbXBhbnkuam9ic2VydmljZSIsImF6cCI6IjEiLCJlbWFpbCI6ImN1c3RvbWVyQG1haWwuY29tIn0.CcTapGbWX0UEMovUwC8kAcWMUxmbOeO0qhsu-wqHQH0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"encoding\" : \"base64\",\n  \"MD5\" : \"fakeMD5\",\n  \"content\" : \"I'm an image\",\n  \"mimetype\": \"image/png\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9001/api/v1/job",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9001",
+					"path": [
+						"api",
+						"v1",
+						"job"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve job's status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve job's output",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}

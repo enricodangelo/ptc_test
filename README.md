@@ -15,7 +15,11 @@ Internal view of components in *FrontService*.
 
 ![container diagram](out/diagrams/c4_container/c4_container.png?raw=true)
 
-*FrontService* is a simple stateless service that uses a mongodb cluster to store it's data, each of the two components can be scaled indipendently when the need arises. The load balancer allows the API component to be scaled up and down transparently to the users.
+*FrontService* is a simple stateless service that uses a mongodb cluster to store it's data, each of the two components can be scaled indipendently when the need arises.
+
+The load balancer allows the API component to be scaled up and down transparently to the users.
+
+For the storage layer I choosed *mongodb* because it's a fast key-value store. The data model used in *FrontService* is very simple, the service deals only with one kind of objects, jobs, each one stores just a few information to keep track of the orchestration by external services (their ids) and the owner of the resource. For these reasons there's no need for a ACID transactions which would just add overhead on each storage access operation and will pose more problems when scaling (RDBMS are notoriously hard to scale horizontally, and costly to scale vertically).
 
 ### API
 
@@ -55,13 +59,13 @@ Jobs in *FrontService* can change status as illustrated in the following diagram
 
 ![job statuses](out/diagrams/jobStatus_state_diagram/jobStatus_state_diagram.png?raw=true)
 
-- CREATED: when the job is first submitted, it means *FrontService* stored local info and started orchestrating execution with downstream services.
-- STORED: successfully stored input blob in *BlobService*.
-- STORED_ERROR: an error occured while storing the input blob in *BlobService*.
-- SUBMITTED: succesfully submitted the job to *JobService* for tis execution.
-- SUBMITTED_ERROR: an error occured while submitting the job to *JobService*.
-- EXECUTION_COMPLETED: *JobService* successfully completed its execution.
-- EXECUTION_ERROR: *JobService* couldn't terminate the execution.
+- `CREATED`: when the job is first submitted, it means *FrontService* stored local info and started orchestrating execution with downstream services.
+- `STORED`: successfully stored input blob in *BlobService*.
+- `STORED_ERROR`: an error occured while storing the input blob in *BlobService*.
+- `SUBMITTED`: succesfully submitted the job to *JobService* for tis execution.
+- `SUBMITTED_ERROR`: an error occured while submitting the job to *JobService*.
+- `EXECUTION_COMPLETED`: *JobService* successfully completed its execution.
+- `EXECUTION_ERROR`: *JobService* couldn't terminate the execution.
 
 #### GET /api/v1/job/:jobId/output
 
@@ -93,5 +97,11 @@ The pair `tenentId` and `clientId` from the JWT token are used to identify the u
 - *BlobService* never deletes a blob unless he's told so, but that use case is out of scope, that means that one stored a blob will always be found.
 - *JobService* will overwrite the input blob with the output of its elaboration. That simplifies the communication between the systems but doesn't change the solution.
 
+
+### Implementation
+
+Only the *API* component of the system has been implemented in this poc, the storage layer as well as the external services are mocked with classes.
+
 ### Further work
 
+- queue (now comm is sync)
