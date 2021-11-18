@@ -9,7 +9,7 @@ export const jpgJobInput = {
   encoding: 'base64',
   MD5: 'fakeMD5',
   content: 'I am an image',
-  mimetype: 'image/jpg'
+  mimetype: 'image/jpeg'
 };
 
 export const tiffJobInput = {

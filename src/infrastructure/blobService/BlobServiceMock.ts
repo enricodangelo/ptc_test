@@ -7,7 +7,7 @@ import { cats } from './cats';
 export class BlobServiceMock implements IBlobService {
   private count = 1;
 
-  async postNewBlob(blob: BSBlobInput): Promise<number | BSError> {
+  async postNewBlob(_blob: BSBlobInput): Promise<number | BSError> {
     if (Math.random() < 0.5) {
       return this.count++;
     } else {

@@ -33,7 +33,7 @@ export class GetJobOutput {
 
     // check permission on job
     if (!job.userIdentity.equals(userIdentity)) {
-      throw new PTCError(PTCERROR_TYPE.FORBIDDEN, '');
+      throw new PTCError(PTCERROR_TYPE.NOT_AUTHORIZED, '');
     }
 
     // job is completed, can return it

@@ -26,7 +26,7 @@ export class GetJobStatus {
 
     // check permission on job
     if (!job.userIdentity.equals(userIdentity)) {
-      throw new PTCError(PTCERROR_TYPE.FORBIDDEN, '');
+      throw new PTCError(PTCERROR_TYPE.NOT_AUTHORIZED, '');
     }
 
     if (job.canTrustLocalStatus()) {

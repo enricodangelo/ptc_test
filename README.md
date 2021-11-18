@@ -121,6 +121,8 @@ The pair `tenentId` and `sub` from the JWT token are used to identify the users,
 
 Only the _API_ component of the system has been implemented in this poc, the storage layer as well as the external services are mocked with classes.
 
+_JobService_ and _BlobService_ mocks are implemented to return errors randomly, as well as different valid expected values.
+
 ### Further work
 
 - queue (now comm is sync)
