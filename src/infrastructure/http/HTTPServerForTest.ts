@@ -1,5 +1,5 @@
 import { default as express } from 'express';
-import { Configuration, HTTPServerConf } from '../../util/Configuration';
+import { HTTPServerConf } from '../../util/Configuration';
 import { HTTPServer } from './HTTPServer';
 import { JobController } from './controller/JobController';
 import { IJobRepository } from '../../domain/repository/IJobRepository';
@@ -19,8 +19,6 @@ export class HTTPServerForTest extends HTTPServer {
 
   static async startForE2ETest(httpServerConf: HTTPServerConf): Promise<express.Express> {
     const httpServerForTest: HTTPServerForTest = new HTTPServerForTest(httpServerConf);
-
-    Configuration.getInstance();
 
     const jobRepository: IJobRepository = new JobRepositoryJson();
     const jobService: IJobService = new JobServiceMock();

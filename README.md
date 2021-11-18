@@ -90,7 +90,7 @@ Each API endpoint is authenticated via a Bearer JWT token. Since this is a poc o
 
 The poc checks that the audience provided in the token matches the one configured.
 
-The pair `tenentId` and `clientId` from the JWT token are used to identify the users, they are attached to each created job and check before accessing it, only the user that created a job can retrieve it's status and output.
+The pair `tenentId` and `sub` from the JWT token are used to identify the users, they are attached to each created job and check before accessing it, only the user that created a job can retrieve it's status and output.
 
 #### Assumptions
 

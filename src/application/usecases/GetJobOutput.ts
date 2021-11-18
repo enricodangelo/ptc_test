@@ -1,7 +1,7 @@
-import { ClientIdentity } from '../../domain/entity/ClientIdentity';
 import { SavedJob } from '../../domain/entity/Job';
 import { JobId } from '../../domain/entity/JobId';
 import { JobOutput } from '../../domain/entity/JobOutput';
+import { UserIdentity } from '../../domain/entity/UserIdentity';
 import { IJobRepository } from '../../domain/repository/IJobRepository';
 import { BSBlobOutput } from '../../infrastructure/blobService/BSBlobOutput';
 import { BSError } from '../../infrastructure/blobService/BSError';
@@ -23,7 +23,7 @@ export class GetJobOutput {
     this.jobService = jobService;
   }
 
-  async getJobOutput({ id, clientIdentity }: { id: JobId; clientIdentity: ClientIdentity }): Promise<JobOutput> {
+  async getJobOutput({ id, userIdentity }: { id: JobId; userIdentity: UserIdentity }): Promise<JobOutput> {
     Logger.log(`GetJobOutput UseCase: ${id}`);
     const job: SavedJob | undefined = await this.jobRepository.findJobById(id);
     if (!job) {
@@ -32,7 +32,7 @@ export class GetJobOutput {
     }
 
     // check permission on job
-    if (!job.clientIdentity.equals(clientIdentity)) {
+    if (!job.userIdentity.equals(userIdentity)) {
       throw new PTCError(PTCERROR_TYPE.FORBIDDEN, '');
     }
 

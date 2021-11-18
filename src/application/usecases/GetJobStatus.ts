@@ -1,6 +1,6 @@
-import { ClientIdentity } from '../../domain/entity/ClientIdentity';
 import { JOB_STATUS, SavedJob } from '../../domain/entity/Job';
 import { JobId } from '../../domain/entity/JobId';
+import { UserIdentity } from '../../domain/entity/UserIdentity';
 import { IJobRepository } from '../../domain/repository/IJobRepository';
 import { IJobService, JS_JOB_STATUS } from '../../infrastructure/jobService/IJobService';
 import { JSError } from '../../infrastructure/jobService/JSError';
@@ -16,7 +16,7 @@ export class GetJobStatus {
     this.jobService = jobService;
   }
 
-  async getJobStatus({ id, clientIdentity }: { id: JobId; clientIdentity: ClientIdentity }): Promise<JOB_STATUS> {
+  async getJobStatus({ id, userIdentity }: { id: JobId; userIdentity: UserIdentity }): Promise<JOB_STATUS> {
     Logger.log(`GetJobStatus UseCase: ${id}`);
     const job: SavedJob | undefined = await this.jobRepository.findJobById(id);
     if (!job) {
@@ -25,7 +25,7 @@ export class GetJobStatus {
     }
 
     // check permission on job
-    if (!job.clientIdentity.equals(clientIdentity)) {
+    if (!job.userIdentity.equals(userIdentity)) {
       throw new PTCError(PTCERROR_TYPE.FORBIDDEN, '');
     }
 

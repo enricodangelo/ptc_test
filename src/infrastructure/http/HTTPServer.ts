@@ -11,6 +11,7 @@ export class HTTPServer {
   private httpServerConf: HTTPServerConf;
   protected app: express.Express;
 
+  // TODO pass jwt options too
   constructor(httpServerConf: HTTPServerConf) {
     this.httpServerConf = httpServerConf;
     this.app = express();

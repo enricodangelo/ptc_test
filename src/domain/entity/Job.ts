@@ -1,6 +1,6 @@
 import { JS_JOB_STATUS } from '../../infrastructure/jobService/IJobService';
-import { ClientIdentity } from './ClientIdentity';
 import { JobId } from './JobId';
+import { UserIdentity } from './UserIdentity';
 
 export enum JOB_STATUS {
   CREATED = 'CREATED',
@@ -22,28 +22,35 @@ export class ContentInfo {
   }
 }
 export class Job {
-  readonly clientIdentity: ClientIdentity;
+  readonly userIdentity: UserIdentity;
+  private _clientId: string;
   private _extJobId?: number;
   private _extBlobId?: number;
   private _contentInfo?: ContentInfo;
   private _status: JOB_STATUS;
 
   protected constructor(
-    clientIdentity: ClientIdentity,
+    userIdentity: UserIdentity,
+    clientId: string,
     extJobId: number | undefined,
     extBlobId: number | undefined,
     contentInfo: ContentInfo | undefined,
     status: JOB_STATUS
   ) {
-    this.clientIdentity = clientIdentity;
+    this.userIdentity = userIdentity;
+    this._clientId = clientId;
     this._extJobId = extJobId;
     this._extBlobId = extBlobId;
     this._contentInfo = contentInfo;
     this._status = status;
   }
 
-  static createNewJob(clientIdentity: ClientIdentity): Job {
-    return new Job(clientIdentity, undefined, undefined, undefined, JOB_STATUS.CREATED);
+  static createNewJob(userIdentity: UserIdentity, clientId: string): Job {
+    return new Job(userIdentity, clientId, undefined, undefined, undefined, JOB_STATUS.CREATED);
+  }
+
+  get clientId(): string {
+    return this._clientId;
   }
 
   get extJobId(): number | undefined {
@@ -148,7 +155,7 @@ export class SavedJob extends Job {
   private _updatedAt: Date;
 
   constructor(id: JobId, createdAt: Date, updatedAt: Date, job: Job) {
-    super(job.clientIdentity, job.extJobId, job.extBlobId, job.contentInfo, job.status);
+    super(job.userIdentity, job.clientId, job.extJobId, job.extBlobId, job.contentInfo, job.status);
     this.id = id;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;

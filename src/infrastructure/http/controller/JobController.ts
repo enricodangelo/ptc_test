@@ -3,20 +3,19 @@ import { StatusCodes } from 'http-status-codes';
 import { CreateNewJob } from '../../../application/usecases/CreateNewJob';
 import { GetJobOutput } from '../../../application/usecases/GetJobOutput';
 import { GetJobStatus } from '../../../application/usecases/GetJobStatus';
-import { ClientIdentity } from '../../../domain/entity/ClientIdentity';
 import { JOB_STATUS, SavedJob } from '../../../domain/entity/Job';
 import { JobId } from '../../../domain/entity/JobId';
 import { JobOutput } from '../../../domain/entity/JobOutput';
+import { UserIdentity } from '../../../domain/entity/UserIdentity';
 import { Logger } from '../../../util/Logger';
-import { checkMD5 } from '../../../util/MD5Utils';
 import { PTCError, PTCERROR_TYPE } from '../../../util/PTCError';
 
 export class JobController {
   static createNewJob = async (createNewJobUseCase: CreateNewJob) => {
     return async (req: Request, res: Response) => {
       try {
-        const { MD5, content, mimetype } = req.body;
-        const { clientId, tenentId } = res.locals.jwtPayload;
+        const { content, mimetype } = req.body;
+        const { clientId, tenentId, sub } = res.locals.jwtPayload;
 
         // NOTE: disabled for testing
         // // option to disable MD5 checks, usefull while testing
@@ -26,7 +25,8 @@ export class JobController {
 
         const job: SavedJob = await createNewJobUseCase.createNewJob({
           clientId: clientId,
-          tenentId: tenentId
+          tenentId: tenentId,
+          sub: sub
         });
         createNewJobUseCase
           .submitNewBlob({
@@ -75,11 +75,11 @@ export class JobController {
     return async (req: Request, res: Response) => {
       try {
         const { jobId } = req.params;
-        const { clientId, tenentId } = res.locals.jwtPayload;
+        const { tenentId, sub } = res.locals.jwtPayload;
 
         const status: JOB_STATUS = await getJobStatusUseCase.getJobStatus({
           id: new JobId(parseInt(jobId)),
-          clientIdentity: new ClientIdentity(clientId, tenentId)
+          userIdentity: new UserIdentity(sub, tenentId)
         });
 
         res.status(StatusCodes.OK).send({
@@ -119,11 +119,11 @@ export class JobController {
     return async (req: Request, res: Response) => {
       try {
         const { jobId } = req.params;
-        const { clientId, tenentId } = res.locals.jwtPayload;
+        const { tenentId, sub } = res.locals.jwtPayload;
 
         const jobOutput: JobOutput = await getJobOutputUseCase.getJobOutput({
           id: new JobId(parseInt(jobId)),
-          clientIdentity: new ClientIdentity(clientId, tenentId)
+          userIdentity: new UserIdentity(sub, tenentId)
         });
 
         res

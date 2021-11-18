@@ -1,4 +1,3 @@
-import { ClientIdentity } from '../../domain/entity/ClientIdentity';
 import { ContentInfo, Job, SavedJob } from '../../domain/entity/Job';
 import { IJobRepository } from '../../domain/repository/IJobRepository';
 import { IBlobService } from '../../infrastructure/blobService/IBlobService';
@@ -7,6 +6,7 @@ import { BSError } from '../../infrastructure/blobService/BSError';
 import { IJobService } from '../../infrastructure/jobService/IJobService';
 import { JSError } from '../../infrastructure/jobService/JSError';
 import { JSJob } from '../../infrastructure/jobService/JSJob';
+import { UserIdentity } from '../../domain/entity/UserIdentity';
 
 export class CreateNewJob {
   private jobRepository: IJobRepository;
@@ -19,14 +19,22 @@ export class CreateNewJob {
     this.jobService = jobService;
   }
 
-  public async createNewJob({ clientId, tenentId }: { clientId: string; tenentId: string }): Promise<SavedJob> {
+  public async createNewJob({
+    clientId,
+    tenentId,
+    sub
+  }: {
+    clientId: string;
+    tenentId: string;
+    sub: string;
+  }): Promise<SavedJob> {
     // create job
-    const newJob: Job = Job.createNewJob(new ClientIdentity(clientId, tenentId));
-    Logger.log(`Created new JOB for ${newJob.clientIdentity}`);
+    const newJob: Job = Job.createNewJob(new UserIdentity(sub, tenentId), clientId);
+    Logger.log(`Created new JOB for ${newJob.userIdentity}`);
 
     // persist job
     const savedJob: SavedJob = await this.jobRepository.save(newJob);
-    Logger.log(`Persisted new JOB for ${newJob.clientIdentity}, ${savedJob.id}`);
+    Logger.log(`Persisted new JOB for ${newJob.userIdentity}, ${savedJob.id}`);
 
     return savedJob;
   }
@@ -60,6 +68,7 @@ export class CreateNewJob {
     job = await this.jobRepository.update(job);
 
     // submitting job
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const jsResponse: JSJob | JSError = await this.jobService.postJob(job.extBlobId!);
 
     // check error on JobService
