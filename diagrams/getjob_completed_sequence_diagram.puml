@@ -1,0 +1,6 @@
+@startuml
+User -> FrontService: GET /api/v1/job/:id/output
+FrontService -> BlobService: GET /api/v1/blob/:bsid
+BlobService -> FrontService: {\n  id: bsid,\n  base64Content: content,\n  mimetype: mimetype,\n  length: length\n}
+FrontService -> User: {\n  id: id,\n  base64Content: content,\n  mimetype: mimetype,\n  length: length,\n  MD5: MD5\n}
+@enduml

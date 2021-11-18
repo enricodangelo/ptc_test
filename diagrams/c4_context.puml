@@ -7,16 +7,19 @@
 !include DEVICONS/nodejs_small.puml
 !include FONTAWESOME/users.puml
 !include FONTAWESOME/server.puml
+!include FONTAWESOME/balance_scale.puml
 
 Person(user, "Customer", "Want to apply operations to images", $sprite="users")
+
+System_Ext(lb, "Load Balancer", $sprite=balance_scale)
 
 System(fs, "FrontService", "node.js", "The main interface that the customer interacts with", $sprite="nodejs_small")
 
 System_Ext(jsapi, "JobService", "API worker.blob.net", "Job submissions, job status", $sprite="server")
 System_Ext(bsapi, "BlobService", "API worker.blob.net", "Stores blob", $sprite="server")
 
-
-Rel(user, fs, "Uses", "https")
+Rel(user, lb, "Uses", "https")
+Rel(lb, fs, "Uses", "https")
 Rel(fs, jsapi, "Uses", "REST API")
 Rel(fs, bsapi, "Uses", "REST API")
 Rel_R(jsapi, bsapi, "Uses", "REST API")

@@ -1,0 +1,18 @@
+@startuml
+User -> FrontService: POST /api/v1/job\n{\n  encoding: encoding,\n  MD5: MD5,\n  content: content,\n  mimetype: mimetype\n}\nJWT token: {\n  tenentId\n  clientId: clientId\n  audience: audience\n  appid: appid\n  names: names\n  email: email\n}
+
+FrontService -> FrontService: Store new Job\n(status: CREATED)
+' could store blob too to retry in case blobservice fails
+
+FrontService -> User: {\n  id: id,\n  status: CREATED\n}
+
+FrontService -> BlobService: POST /api/v1/blob
+BlobService -> FrontService: {\n  id: BSId\n}
+
+FrontService -> FrontService: Update Job\n(BSId, status: STORED)
+
+FrontService -> JobService: POST /api/v1/job
+JobService -> FrontService: {\n  id: JSId,\n  status: JSStatus\n}
+
+FrontService -> FrontService: Update Job\n(JSId, status: SUBMITTED)
+@enduml

@@ -125,6 +125,10 @@ export class Job {
   isOutputReady(): boolean {
     return this._status === JOB_STATUS.EXECUTION_COMPLETED;
   }
+
+  isInError(): boolean {
+    return this._status === JOB_STATUS.STORED_ERROR || this._status === JOB_STATUS.SUBMITTED_ERROR || this._status === JOB_STATUS.EXECUTION_ERROR;
+  }
 }
 
 export class SavedJob extends Job {

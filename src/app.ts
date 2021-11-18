@@ -26,7 +26,7 @@ import { Configuration } from './util/Configuration';
   const blobService: IBlobService = new BlobServiceMock();
   const createNewJobUseCase: CreateNewJob = new CreateNewJob(jobRepository, blobService, jobService);
   const getJobStatusUseCase: GetJobStatus = new GetJobStatus(jobRepository, jobService);
-  const getJobOutputUseCase: GetJobOutput = new GetJobOutput(jobRepository, blobService);
+  const getJobOutputUseCase: GetJobOutput = new GetJobOutput(jobRepository, blobService, jobService);
 
   const server = new HTTPServer(configuration.httpServerConf);
   await server.init({

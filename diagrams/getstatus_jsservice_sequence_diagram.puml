@@ -1,0 +1,6 @@
+@startuml
+User -> FrontService: GET /api/v1/job/:id
+FrontService -> JobService: GET /api/v1/job/:jsid
+JobService -> FrontService:  {\n  id: JSId,\n  status: JSSstatus\n}
+FrontService -> User: {\n  id: id,\n  status: status\n}
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+User -> FrontService: GET /api/v1/job/:id/output
+
+FrontService -> JobService: GET /api/v1/job/:id
+JobService -> FrontService: status != SUCCESS
+
+FrontService ->User: HTTP 404 resource does not exists
+@enduml

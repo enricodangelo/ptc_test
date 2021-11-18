@@ -8,19 +8,22 @@
 !include DEVICONS/mongodb.puml
 !include FONTAWESOME/users.puml
 !include FONTAWESOME/server.puml
-
+!include FONTAWESOME/balance_scale.puml
 
 Person(user, "Customer", "Want to apply operations to images", $sprite="users")
 
+System_Ext(lb, "Load Balancer", $sprite=balance_scale)
+
 System_Boundary(c1, "FrontService") {
-    Container(fsapi, "Web Application", "node.js", API to access FrontService, $sprite="nodejs_small")
-    ContainerDb(fsdb, "storage", "mongodb", "Stores informations about jobs", $sprite="mongodb")
+    Container(fsapi, "API", "node.js", API to access FrontService, $sprite="nodejs_small")
+    ContainerDb(fsdb, "storage", "mongodb cluster", "Stores informations about jobs", $sprite="mongodb")
 }
-Container(jsapi, "worker.cloud.net", "API", "Job submissions, job status", $sprite="server")
-Container(bsapi, "worker.blob.net", "API", "Stores blob", $sprite="server")
+System_Ext(jsapi, "JobService", "API worker.blob.net", "Job submissions, job status", $sprite="server")
+System_Ext(bsapi, "BlobService", "API worker.blob.net", "Stores blob", $sprite="server")
 
 
-Rel(user, fsapi, "Uses", "https")
+Rel(user, lb, "Uses", "https")
+Rel(lb, fsapi, "Uses", "https")
 Rel_R(fsapi, fsdb, "Uses", "mongodb API")
 Rel(fsapi, jsapi, "Uses", "REST API")
 Rel(fsapi, bsapi, "Uses", "REST API")
