@@ -11,13 +11,17 @@ import { JobRepositoryJson } from '../../domain/repository/JobRepositoryJson';
 import { CreateNewJob } from '../../application/usecases/CreateNewJob';
 import { GetJobStatus } from '../../application/usecases/GetJobStatus';
 import { GetJobOutput } from '../../application/usecases/GetJobOutput';
+import { Server } from 'http';
 
 export class HTTPServerForTest extends HTTPServer {
   constructor(httpServerConf: HTTPServerConf) {
     super(httpServerConf);
   }
 
-  static async startForE2ETest(httpServerConf: HTTPServerConf): Promise<express.Express> {
+  static async startForE2ETest(httpServerConf: HTTPServerConf): Promise<{
+    expressApp: express.Express;
+    httpServer: Server;
+  }> {
     const httpServerForTest: HTTPServerForTest = new HTTPServerForTest(httpServerConf);
 
     const jobRepository: IJobRepository = new JobRepositoryJson();
@@ -31,7 +35,10 @@ export class HTTPServerForTest extends HTTPServer {
       getJobStatusHandler: await JobController.getJobStatus(getJobStatusUseCase),
       getJobOutputHandler: await JobController.getJobOutput(getJobOutputUseCase)
     });
-    await httpServerForTest.start();
-    return httpServerForTest.app;
+    const httpServer: Server = await httpServerForTest.start();
+    return {
+      expressApp: httpServerForTest.app,
+      httpServer: httpServer
+    };
   }
 }

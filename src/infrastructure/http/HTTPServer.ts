@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { HTTPServerConf } from '../../util/Configuration';
 import { getFsRouter } from './route/fsRouter';
+import { Server } from 'http';
 
 export class HTTPServer {
   private httpServerConf: HTTPServerConf;
@@ -56,12 +57,12 @@ export class HTTPServer {
     );
   }
 
-  async start(): Promise<void> {
-    new Promise<void>((resolve) => {
-      this.app.listen(this.httpServerConf.PORT, () => {
-        resolve();
-      });
+  async start(): Promise<Server> {
+    const httpServer: Server = await new Promise<Server>((resolve) => {
+      const httpServer: Server = this.app.listen(this.httpServerConf.PORT);
+      resolve(httpServer);
     });
     console.log(`HTTPServer running at https://localhost:${this.httpServerConf.PORT}`);
+    return httpServer;
   }
 }

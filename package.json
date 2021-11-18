@@ -10,6 +10,9 @@
     "compile": "tsc -p tsconfig.json",
     "copy-env-file": "cp *.env dist/",
     "build": "npm run format && npm run lint && npm run compile && npm run copy-env-file",
+    "copy-test-env-file": "cp *.env test/",
+    "jest": "NODE_ENV=test jest --config jest.config.ts",
+    "test": "npm run copy-test-env-file && npm run jest",
     "start": "node dist/src/app.js"
   },
   "repository": {

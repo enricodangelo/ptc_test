@@ -2,6 +2,26 @@
 
 ## FrontService
 
+Install dependencies:
+
+    npm install
+
+Clean last build
+
+    npm run clean
+
+Build the system (format code, lint, compile, copy env files)
+
+    npm run build
+
+Run "FrontService"
+
+    npm run start
+
+Run end-to-end tests
+
+    npm run test
+
 ### Architectural overveiw
 
 I designed _FrontService_ as the front service to orchestrate blob and job submission to downstream services _BlobService_ and _JobService_.
