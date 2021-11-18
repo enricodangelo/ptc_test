@@ -49,7 +49,7 @@ export class GetJobOutput {
       // check error on BlobService
       if (bsResponse instanceof BSError) {
         Logger.log(`GetJobOutput UseCase: received error (${JSON.stringify(bsResponse)}) from BlobService ${id}`);
-        throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `BlobService error: (jsResponse.type) ${bsResponse.message}`);
+        throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `BlobService error: (${bsResponse.type}) ${bsResponse.message}`);
       }
 
       Logger.log(`GetJobOutput UseCase: output retrieved for job ${id}`);
@@ -72,7 +72,7 @@ export class GetJobOutput {
     // check error on JobService
     if (jsResponse instanceof JSError) {
       Logger.log(`GetJobOutput UseCase: received error (${JSON.stringify(jsResponse)}) from JobService ${id}`);
-      throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `JobService error: (jsResponse.type) ${jsResponse.message}`);
+      throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `JobService error: (${jsResponse.type}) ${jsResponse.message}`);
     }
 
     switch (jsResponse) {
@@ -92,7 +92,7 @@ export class GetJobOutput {
         // check error on BlobService
         if (bsResponse instanceof BSError) {
           Logger.log(`GetJobOutput UseCase: received error (${JSON.stringify(bsResponse)}) from BlobService ${id}`);
-          throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `BlobService error: (jsResponse.type) ${bsResponse.message}`);
+          throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `BlobService error: (${bsResponse.type}) ${bsResponse.message}`);
         }
 
         Logger.log(`GetJobOutput UseCase: output retrieved for job ${id}`);

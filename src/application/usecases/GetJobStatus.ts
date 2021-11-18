@@ -43,7 +43,7 @@ export class GetJobStatus {
     // check error on JobService
     if (jsResponse instanceof JSError) {
       Logger.log(`GetJobStatus UseCase: received error (${JSON.stringify(jsResponse)}) from JobService ${id}`);
-       throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `JobService error: (jsResponse.type) ${jsResponse.message}`);
+       throw new PTCError(PTCERROR_TYPE.EXT_SERVICE_ERROR, `JobService error: (${jsResponse.type}) ${jsResponse.message}`);
     }
 
     // update job's status
