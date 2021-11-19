@@ -22,6 +22,17 @@ Run end-to-end smoke tests
 
     npm run test
 
+## Directory Structure
+
+| Directory | Content                                       |
+| --------- | --------------------------------------------- |
+| diagrams  | Diagrams created with PlantUML                |
+| out       | Diagrams exported as images                   |
+| postman   | Postman collection exported with calls to API |
+| src       | source code of solution                       |
+| test      | test code                                     |
+| .         | configuration and env files                   |
+
 ### Architectural overveiw
 
 I designed _FrontService_ as the front service to orchestrate blob and job submission to downstream services _BlobService_ and _JobService_.
@@ -38,7 +49,19 @@ _FrontService_ is a simple stateless service that uses a mongodb cluster to stor
 
 The load balancer allows the API component to be scaled up and down transparently to the users.
 
-For the storage layer I designed the solution to use _mongodb_ because it's a fast key-value store. The data model used in _FrontService_ is very simple, the service deals only with one kind of objects, jobs, each one stores just a few information to keep track of the orchestration by external services (their ids) and the owner of the resource. For these reasons there's no need for a ACID transactions which would just add overhead on each storage access operation and will pose more problems when scaling (RDBMS are notoriously hard to scale horizontally, and costly to scale vertically).
+For the storage layer I designed the solution to use _mongodb_ because it's a fast document store. The data model used in _FrontService_ is very simple, the service deals only with one kind of objects, jobs, each one stores just a few information to keep track of the orchestration by external services (their ids) and the owner of the resource. For these reasons there's no need for a ACID transactions which would just add overhead on each storage access operation and will pose more problems when scaling (RDBMS are harder hard to scale horizontally, and more costly to scale vertically).
+
+### Assumptions
+
+- _BlobService_ never deletes a blob unless he's told so, but that use case is out of scope, that means that one stored a blob will always be found.
+- _JobService_ will overwrite the input blob with the output of its elaboration. That simplifies the communication between the systems but doesn't change the solution.
+- _JobService_ will store the output's blob in _BlobService_ before setting the job's status to `SUCCESS`.
+
+### Implementation
+
+Only the _API_ component of the system has been implemented in this PoC, the storage layer as well as the external services are mocked with classes, the internal code architecture allow for an easy switch from mock to real services.
+
+_JobService_ and _BlobService_ mocks are implemented to return errors randomly, as well as different valid expected values.
 
 ### API
 
@@ -48,7 +71,7 @@ For the storage layer I designed the solution to use _mongodb_ because it's a fa
 
 #### POST /api/v1/job
 
-When submitting a new job to _FrontService_, it takes care of storing the input blob to _BlobService_ and submitting a job request to _JobService_.
+When submitting a new job to _FrontService_, the system takes care of storing the input blob to _BlobService_ and submitting a job request to _JobService_.
 
 _FrontService_ will return to the user as soon as the needed info is stored locally, then the rest of the orchestration is executed asynchronously.
 
@@ -108,20 +131,9 @@ In all the other cases _FrontService_ asks _JobService_ for the status of the co
 
 Each API endpoint is authenticated via a Bearer JWT token. Since this is a PoC only a few simple checks are done, and the token is not verified.
 
-The PoC checks that the audience provided in the token matches the one configured.
+The PoC checks that the `audience` provided in the token matches the one configured in the app.
 
 The pair `tenentId` and `sub` from the JWT token are used to identify the users, they are attached to each created job and check before accessing it, only the user that created a job can retrieve it's status and output.
-
-#### Assumptions
-
-- _BlobService_ never deletes a blob unless he's told so, but that use case is out of scope, that means that one stored a blob will always be found.
-- _JobService_ will overwrite the input blob with the output of its elaboration. That simplifies the communication between the systems but doesn't change the solution.
-
-### Implementation
-
-Only the _API_ component of the system has been implemented in this PoC, the storage layer as well as the external services are mocked with classes, the internal code architecture allow for an easy switch from mock to real services.
-
-_JobService_ and _BlobService_ mocks are implemented to return errors randomly, as well as different valid expected values.
 
 #### Internal Architecture
 

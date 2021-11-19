@@ -42,18 +42,50 @@
     {
       "name": "Retrieve job's status",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ0aWQiOjEsIm9pZCI6MSwiYXVkIjoiY29tLmNvbXBhbnkuam9ic2VydmljZSIsImF6cCI6IjEiLCJlbWFpbCI6ImN1c3RvbWVyQG1haWwuY29tIn0.CcTapGbWX0UEMovUwC8kAcWMUxmbOeO0qhsu-wqHQH0",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "header": [],
-        "url": null
+        "url": {
+          "raw": "http://localhost:9001/api/v1/job/1/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9001",
+          "path": ["api", "v1", "job", "1", "status"]
+        }
       },
       "response": []
     },
     {
       "name": "Retrieve job's output",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ0aWQiOjEsIm9pZCI6MSwiYXVkIjoiY29tLmNvbXBhbnkuam9ic2VydmljZSIsImF6cCI6IjEiLCJlbWFpbCI6ImN1c3RvbWVyQG1haWwuY29tIn0.CcTapGbWX0UEMovUwC8kAcWMUxmbOeO0qhsu-wqHQH0",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "header": [],
-        "url": null
+        "url": {
+          "raw": "http://localhost:9001/api/v1/job/1/output",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9001",
+          "path": ["api", "v1", "job", "1", "output"]
+        }
       },
       "response": []
     }

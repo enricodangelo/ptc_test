@@ -19,7 +19,6 @@ export class GetJobOutput {
   constructor(jobRepository: IJobRepository, blobService: IBlobService, jobService: IJobService) {
     this.jobRepository = jobRepository;
     this.blobService = blobService;
-    this.blobService = blobService;
     this.jobService = jobService;
   }
 
@@ -84,12 +83,16 @@ export class GetJobOutput {
     let bsResponse: BSBlobOutput | BSError;
     switch (jsResponse) {
       case JS_JOB_STATUS.FAILED:
+        job.errorExecutingJob();
+        await this.jobRepository.update(job);
         Logger.log(`GetJobOutput UseCase: job's output is not ready yet: ${id}`);
         throw new PTCError(PTCERROR_TYPE.NOT_FOUND, 'Output for this job does not exist yet.');
       case JS_JOB_STATUS.RUNNING:
         Logger.log(`GetJobOutput UseCase: job's output is not ready yet: ${id}`);
         throw new PTCError(PTCERROR_TYPE.NOT_FOUND, 'Output for this job does not exist yet.');
       case JS_JOB_STATUS.SUCCESS:
+        job.executionCompleted();
+        await this.jobRepository.update(job);
         if (!job.extBlobId) {
           Logger.log(`GetJobOutput UseCase: should never happen, extJobId should be defined here: ${id}`);
           throw new PTCError(PTCERROR_TYPE.DOMAIN_ERROR, `Job ${id} should have "extBlobId" set.`);

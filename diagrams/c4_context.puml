@@ -13,10 +13,10 @@ Person(user, "Customer", "Want to apply operations to images", $sprite="users")
 
 System_Ext(lb, "Load Balancer", $sprite=balance_scale)
 
-System(fs, "FrontService", "node.js", "The main interface that the customer interacts with", $sprite="nodejs_small")
+System(fs, "FrontService", "node.js", "Orchestrating service", $sprite="nodejs_small")
 
-System_Ext(jsapi, "JobService", "API worker.blob.net", "Job submissions, job status", $sprite="server")
-System_Ext(bsapi, "BlobService", "API worker.blob.net", "Stores blob", $sprite="server")
+System_Ext(jsapi, "JobService", "API worker.blob.net", "Executes jobs", $sprite="server")
+System_Ext(bsapi, "BlobService", "API worker.blob.net", "Stores blobs", $sprite="server")
 
 Rel(user, lb, "Uses", "https")
 Rel(lb, fs, "Uses", "https")
