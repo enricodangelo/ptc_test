@@ -125,7 +125,7 @@ _JobService_ and _BlobService_ mocks are implemented to return errors randomly, 
 
 #### Internal Architecture
 
-I developed this Poc organizing the code according to the *Clean Architecture* pattern.
+I developed this Poc organizing the code according to the _Clean Architecture_ pattern.
 
 This pattern organizes code in different layers:
 
@@ -141,16 +141,16 @@ Dependencies between these layers is
 
 Then there is configuration and bootstrap code that lies outside of these layers (code for reading configuration, setting up the application and starting it).
 
-This architecture allows the developer to concentrate to each single layer without worring about the others, as long as interfaces are clearly defined between them, the application is naturally built to allow easy testing, it is a *screaming architecture* that means that it's easy to understand what the aplpication does (you can just look at the use cases).
+This architecture allows the developer to concentrate to each single layer without worring about the others, as long as interfaces are clearly defined between them, the application is naturally built to allow easy testing, it is a _screaming architecture_ that means that it's easy to understand what the aplpication does (you can just look at the use cases).
 
 ### Further work
 
 To move the PoC to production code obviously the persistence layer should be implemented to use a real mongodb instance. We should also pay better attention to mapping data from outside the application to the inside to be sure we are not introducing a hidden dependency on the shape of data define outside of our control.
 
-For resiliance and performance, a circuit breaker pattern can be implemented in front of *JobService* and *BlobService* so when the communication failures reaches a certain threshold, *FrontService* will (almost) stop trying to communicate with them and fail immediately, sparing the users the timeouts in network communication. The pattern will not stop all the communications, some are still allowed and they serve as a probe to recognize when the downstream service is up and running again, in which case all communication is re-established as normal.
+For resiliance and performance, a circuit breaker pattern can be implemented in front of _JobService_ and _BlobService_ so when the communication failures reaches a certain threshold, _FrontService_ will (almost) stop trying to communicate with them and fail immediately, sparing the users the timeouts in network communication. The pattern will not stop all the communications, some are still allowed and they serve as a probe to recognize when the downstream service is up and running again, in which case all communication is re-established as normal.
 
 From an architectural point of view, the major drawback of this solution is the synchronous communication between services. This means that if one of the needed services is not available when the request is issued, it will fail.
 
-One mitigation to this situation would be to design a cron job on *FrontService* side that will look for failed jobs and reissue them, a retry policy should be devised to avoid infinite retries of the same job. This solution would require to store the input blob until job's completion, so that the system will always be able to retry a failed job, and this may have a huge impact in required resources if the system is heavily used.
+One mitigation to this situation would be to design a cron job on _FrontService_ side that will look for failed jobs and reissue them, a retry policy should be devised to avoid infinite retries of the same job. This solution would require to store the input blob until job's completion, so that the system will always be able to retry a failed job, and this may have a huge impact in required resources if the system is heavily used.
 
-A structural solution to the synchronous communication whould be to use an asynchronous communication pattern between the services. for example using a persistent queue as a communication channel between *FrontService* and *JobService*, but that will require support for that kind of communication from *JobService*'s side. This architectrue wuold move the storage requirement of the input blobs and the retry logic to the queue system. *JobService* would just take jobs from the queue, jobs from the queue are removed only after completion and made unavailable to others while in execution.
+A structural solution to the synchronous communication whould be to use an asynchronous communication pattern between the services. for example using a persistent queue as a communication channel between _FrontService_ and _JobService_, but that will require support for that kind of communication from _JobService_'s side. This architectrue wuold move the storage requirement of the input blobs and the retry logic to the queue system. _JobService_ would just take jobs from the queue, jobs from the queue are removed only after completion and made unavailable to others while in execution.
