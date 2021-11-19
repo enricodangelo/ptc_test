@@ -38,7 +38,7 @@ _FrontService_ is a simple stateless service that uses a mongodb cluster to stor
 
 The load balancer allows the API component to be scaled up and down transparently to the users.
 
-For the storage layer I choosed _mongodb_ because it's a fast key-value store. The data model used in _FrontService_ is very simple, the service deals only with one kind of objects, jobs, each one stores just a few information to keep track of the orchestration by external services (their ids) and the owner of the resource. For these reasons there's no need for a ACID transactions which would just add overhead on each storage access operation and will pose more problems when scaling (RDBMS are notoriously hard to scale horizontally, and costly to scale vertically).
+For the storage layer I designed the solution to use _mongodb_ because it's a fast key-value store. The data model used in _FrontService_ is very simple, the service deals only with one kind of objects, jobs, each one stores just a few information to keep track of the orchestration by external services (their ids) and the owner of the resource. For these reasons there's no need for a ACID transactions which would just add overhead on each storage access operation and will pose more problems when scaling (RDBMS are notoriously hard to scale horizontally, and costly to scale vertically).
 
 ### API
 
@@ -106,9 +106,9 @@ In all the other cases _FrontService_ asks _JobService_ for the status of the co
 
 ### Authentication & Authorization
 
-Each API endpoint is authenticated via a Bearer JWT token. Since this is a poc only a few simple checks are done, and the token is not verified.
+Each API endpoint is authenticated via a Bearer JWT token. Since this is a PoC only a few simple checks are done, and the token is not verified.
 
-The poc checks that the audience provided in the token matches the one configured.
+The PoC checks that the audience provided in the token matches the one configured.
 
 The pair `tenentId` and `sub` from the JWT token are used to identify the users, they are attached to each created job and check before accessing it, only the user that created a job can retrieve it's status and output.
 
@@ -119,10 +119,38 @@ The pair `tenentId` and `sub` from the JWT token are used to identify the users,
 
 ### Implementation
 
-Only the _API_ component of the system has been implemented in this poc, the storage layer as well as the external services are mocked with classes.
+Only the _API_ component of the system has been implemented in this PoC, the storage layer as well as the external services are mocked with classes, the internal code architecture allow for an easy switch from mock to real services.
 
 _JobService_ and _BlobService_ mocks are implemented to return errors randomly, as well as different valid expected values.
 
+#### Internal Architecture
+
+I developed this Poc organizing the code according to the *Clean Architecture* pattern.
+
+This pattern organizes code in different layers:
+
+- Domain: contains the domain objects and models their interactions
+- UseCases: contain the business logic of the application, organized in use cases.
+- Infrastructure: contains all infrastructure code, that is code related to the I/O of the application (http server and storage layer are the mosto common)
+
+Dependencies between these layers is
+
+    Infrastructure -- depends on --> UseCases
+    UseCases -- depends on --> Domain
+    Domain has no other dependencies
+
+Then there is configuration and bootstrap code that lies outside of these layers (code for reading configuration, setting up the application and starting it).
+
+This architecture allows the developer to concentrate to each single layer without worring about the others, as long as interfaces are clearly defined between them, the application is naturally built to allow easy testing, it is a *screaming architecture* that means that it's easy to understand what the aplpication does (you can just look at the use cases).
+
 ### Further work
 
-- queue (now comm is sync)
+To move the PoC to production code obviously the persistence layer should be implemented to use a real mongodb instance. We should also pay better attention to mapping data from outside the application to the inside to be sure we are not introducing a hidden dependency on the shape of data define outside of our control.
+
+For resiliance and performance, a circuit breaker pattern can be implemented in front of *JobService* and *BlobService* so when the communication failures reaches a certain threshold, *FrontService* will (almost) stop trying to communicate with them and fail immediately, sparing the users the timeouts in network communication. The pattern will not stop all the communications, some are still allowed and they serve as a probe to recognize when the downstream service is up and running again, in which case all communication is re-established as normal.
+
+From an architectural point of view, the major drawback of this solution is the synchronous communication between services. This means that if one of the needed services is not available when the request is issued, it will fail.
+
+One mitigation to this situation would be to design a cron job on *FrontService* side that will look for failed jobs and reissue them, a retry policy should be devised to avoid infinite retries of the same job. This solution would require to store the input blob until job's completion, so that the system will always be able to retry a failed job, and this may have a huge impact in requirements if the system is heavily used.
+
+A structural solution to the asynchronous communication whould be to use an asynchronous communication pattern between the services. for example using a persistent queue as a communication channel between *FrontService* and *JobService*, but that will require support for that kind of communication from *JobService*'s side. This architectrue wuold move the storage requirement of the input blobs and the retry logic to the queue system. *JobService* would just take jobs from the queue, jobs from the queue are removed only after completion and made unavailable to others while in execution.
