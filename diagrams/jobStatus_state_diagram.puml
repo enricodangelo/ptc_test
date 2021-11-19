@@ -8,6 +8,14 @@ SUBMITTED_ERROR: error while invoking JobService
 EXECUTION_COMPLETED: job reached final succesfull status on JobService
 EXECUTION_ERROR: job reached final error status on JobService
 
+state CREATED #line:grey
+state STORED #line:grey
+state SUBMITTED #line:grey
+state STORED_ERROR #line.bold;line:red
+state SUBMITTED_ERROR #line.bold;line:red
+state EXECUTION_ERROR #line.bold;line:red
+state EXECUTION_COMPLETED #line.bold;line:green
+
 [*] --> CREATED
 CREATED --> STORED
 CREATED --> STORED_ERROR

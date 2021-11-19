@@ -18,7 +18,7 @@ Run "FrontService"
 
     npm run start
 
-Run end-to-end tests
+Run end-to-end smoke tests
 
     npm run test
 
